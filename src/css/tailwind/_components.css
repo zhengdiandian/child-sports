@@ -1,0 +1,7 @@
+@tailwind components;
+.square{
+  @apply before:w-4 before:h-4 before:bg-yellow before:inline-block before:mr-1 flex items-center
+}
+.wrapper{
+  @apply px-2.5 pt-3 w-full h-full min-h-screen-menu
+}

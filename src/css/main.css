@@ -1,0 +1,28 @@
+@import "tailwind/_base.css";
+@import "tailwind/_components.css";
+@import "tailwind/_utilities.css";
+
+@import "_checkbox-radio-switch.css";
+
+@import "_app.css";
+@import "_scrollbars.css";
+@import "_progress.css";
+@import "_table.css";
+/*.router-link-exact-active span{*/
+/*  color: white!important;*/
+/*}*/
+.el-input--prefix .el-input__inner {
+  padding-left: calc(5px + 14px + 12px) !important;;
+}
+
+.el-popper.is-pure.is-light.el-select__popper {
+  z-index: 4000 !important;
+}
+
+.transparent .el-input__inner {
+  background-color: transparent !important;
+}
+
+/*html, body {*/
+/*  font-size: 12px*/
+/*}*/

@@ -1,0 +1,92 @@
+// styles/element/index.scss
+/* 只需要重写你需要的即可 */
+//@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+//  $colors: (
+//    'primary': (
+//      'base': #3470D0,
+//    ),
+//    'warning': (
+//      base: #FFBB01
+//      )
+//  ),
+//);
+
+//// 如果只是按需导入，则可以忽略以下内容。
+//// 如果你想导入所有样式:
+// @use "element-plus/theme-chalk/src/index.scss" as *;
+@use 'sass:map';
+
+$colors: () !default;
+$colors: map.deep-merge(
+                (
+                        'white': #ffffff,
+                        'black': #000000,
+                        "primary": (
+                                "base": #3470D0,
+                        ),
+                        "success": (
+                                "base": #21ba45,
+                        ),
+                        "warning": (
+                                "base": #FFBB01,
+                        ),
+                        "danger": (
+                                "base": #db2828,
+                        ),
+                        "error": (
+                                "base": #db2828,
+                        ),
+                  //"info": (
+                  //        "base": #3470D0,
+                  //),
+                ),
+                $colors
+);
+
+/*$--colors: (
+        "primary": (
+                "base": #3470D0,
+        ),
+        "success": (
+                "base": #21ba45,
+        ),
+        "warning": (
+                "base": #FFBB01,
+        ),
+        "danger": (
+                "base": #db2828,
+        ),
+        "error": (
+                "base": #db2828,
+        ),
+        "info": (
+                "base": #42b8dd,
+        ),
+);*/
+
+// You should use them in scss, because we calculate it by sass.
+// comment next lines to use default color
+@forward "element-plus/theme-chalk/src/common/var.scss" with
+  (
+    // do not use same name, it will override.
+    $colors: $colors,
+    $button-padding-horizontal: ("default": 50px)
+  );
+
+// if you want to import all
+// @use "element-plus/theme-chalk/src/index.scss" as *;
+
+// You can comment it to hide debug info.
+// @debug $--colors;
+
+.el-overlay.is-message-box .el-overlay-message-box {
+  z-index: 999;
+}
+
+.el-table .ascending .sort-caret.ascending {
+  border-bottom-color: var(--colors-text-danger);
+}
+
+.el-table .descending .sort-caret.descending {
+  border-top-color: var(--colors-text-danger);
+}
