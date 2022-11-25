@@ -1,0 +1,495 @@
+<template>
+  <div class="p-8">
+    <div class="flex justify-between">
+      <el-button
+        type="text"
+        @click="openCreateDialog(true)"
+      >
+        <span class="iconfont icon-jiajianzujianjiahao"/>
+        添加学员
+      </el-button>
+      <div>
+        <el-form
+          v-model="filterStudentData"
+          class="flex flex-wrap"
+        >
+          <el-form-item
+            label="性别："
+            class="mr-5"
+          >
+            <el-radio-group
+              v-model="filterStudentData.infantGender"
+              size="small"
+            >
+              <el-radio label="">
+                全部
+              </el-radio>
+              <el-radio label="男">
+                男
+              </el-radio>
+              <el-radio label="女">
+                女
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+
+          <el-form-item class="mr-5">
+            <el-input
+              v-model="filterStudentData.fuzzyQuery"
+              placeholder="请输入查询内容"
+            />
+          </el-form-item>
+          <el-button
+            type="primary"
+            @click="handleCurrentChange(1)"
+          >
+            搜索
+          </el-button>
+        </el-form>
+      </div>
+
+    </div>
+
+    <div>
+      <el-table
+        :data="tableData.list"
+        :border="true"
+        :header-cell-style="{background:'#3470D0',color:'white'}"
+      >
+        <el-table-column
+          align="center"
+          type="index"
+          label="序号"
+          width="60"
+        />
+
+        <el-table-column
+          align="center"
+          prop="infantName"
+          label="姓名"
+          width="90"
+        />
+        <el-table-column
+          align="center"
+          prop="infantGender"
+          label="性别"
+          width="60"
+        />
+
+
+        <el-table-column
+          align="center"
+          prop="infantBirthday"
+          label="生日"
+          width="120"
+        >
+          <template #default="scope">
+            <div>
+              {{ dateFormat(scope.row.infantBirthday, "yyyy-mm-dd") }}
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          align="center"
+          prop="infantParentPhone"
+          label="家长手机号码"
+          width="190"
+        />
+
+
+        <el-table-column
+          align="center"
+          prop="address"
+          label="测试记录"
+          width="auto"
+          min-width="220px"
+        >
+          <template #default="scope">
+
+            <el-link
+              class="mr-10"
+              type="primary"
+              :disabled="scope.row.recordNum ===0"
+              @click="openCreateDialog(false, scope.row)"
+            >
+              {{ scope.row.recordNum }}条
+            </el-link>
+            <el-link
+              type="primary"
+              @click="deleteStudentById(scope.row.infantId)"
+            >
+              变化曲线
+            </el-link>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="address"
+          label="操作"
+          width="auto"
+          min-width="220px"
+          fixed="right"
+        >
+          <template #default="scope">
+
+            <el-link
+              class="mr-10"
+              type="primary"
+              @click="openCreateDialog(false, scope.row)"
+            >
+              编辑
+            </el-link>
+            <el-link
+              type="primary"
+              @click="deleteStudentById(scope.row.infantId)"
+            >
+              删除
+            </el-link>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="flex justify-between pt-5">
+      <ImportAndExportFile
+        @exportData="infantInfoExport"
+        @importData="importStudentData"
+        @downloadTemplate="downloadTemplate"
+      />
+      <el-pagination
+        v-model:currentPage="filterStudentData.pageNum"
+        v-model:page-size="filterStudentData.pageSize"
+        :page-sizes="pageSizes"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="tableData.total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
+  </div>
+  <el-dialog
+    v-model="dialogFormVisible"
+    :title="isCreate ? '新建学员' : '编辑学员'"
+  >
+    <el-form
+      ref="formRef"
+      :model="creatForm"
+      :rules="rules"
+      label-position="right"
+      label-width="126px"
+    >
+      <el-form-item
+
+        label="姓名："
+        prop="infantName"
+      >
+        <el-input
+          v-model="creatForm.infantName"
+          autocomplete="off"
+          placeholder="请输入姓名"
+        />
+      </el-form-item>
+
+
+      <el-form-item
+        class="mr-5"
+        label="性别："
+        prop="infantGender"
+      >
+        <el-radio-group
+          v-model="creatForm.infantGender"
+          class="inline-block"
+        >
+          <template
+            v-for="label in genderList"
+            :key="label"
+          >
+            <el-radio
+              :label="label"
+              :value="label"
+            >
+              {{ label }}
+            </el-radio>
+          </template>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item
+        label="生日："
+        prop="infantBirthday"
+      >
+        <el-date-picker
+          v-model="creatForm.infantBirthday"
+          class="w-full date-picker"
+          type="date"
+        />
+      </el-form-item>
+      <el-form-item
+        label="家长手机号码："
+        prop="infantParentPhone"
+        required
+
+      >
+        <el-input
+          placeholder="请输入家长手机号码"
+          type="number"
+          v-model="creatForm.infantParentPhone"
+        />
+      </el-form-item>
+
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button
+          v-if="isCreate"
+          type="primary"
+          @click="creatStudent"
+        >保存</el-button>
+        <el-button
+          v-else
+          type="primary"
+          @click="updateStudentList"
+        >保存</el-button>
+      </span>
+    </template>
+  </el-dialog>
+</template>
+
+<script setup lang="ts">
+
+import {nextTick, reactive, ref, watch} from "vue";
+
+import type {ElForm} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
+import dateFormat from "@/utils/dateFormat.js";
+import rulesList from "@/utils/rules";
+import {pageSize, pageSizes} from "@/hooks/pagination";
+import {IdCard} from "@/utils/index";
+import {
+  add,
+  downloadTemplate,
+  infantInfoDelete,
+  infantInfoExport,
+  infantInfoImport,
+  list,
+  update
+} from '@/api/toddlerDataManagement'
+import ImportAndExportFile from "@/components/ImportAndExportFile/index.vue";
+
+const genderList = ["男", "女"];
+
+type FormInstance = InstanceType<typeof ElForm>
+
+const formRef = ref<FormInstance>();
+const dialogFormVisible = ref(false);
+const isCreate = ref(true);
+const schoolType = ref("");
+
+let creatForm: any = reactive(
+  {
+    "infantBirthday": "",
+    "infantGender": "",
+    "infantName": "",
+    "infantParentPhone": ""
+  }
+);
+watch(() => creatForm.studentIdentity, (value) => {
+  if (!value) return;
+  if (value.length === 18) {
+    creatForm.studentGender = IdCard(value, 2);
+  }
+
+});
+const resetForm = (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  formEl.resetFields();
+};
+
+const openCreateDialog = (state: boolean, row: any) => {
+  isCreate.value = state;
+  dialogFormVisible.value = true;
+  if (!state) {
+    nextTick(() => {
+      Object.keys(creatForm).forEach(key => {
+        creatForm[key] = row[key];
+      });
+      creatForm.infantId = row.infantId;
+    });
+
+    // eslint-disable-next-line no-empty
+  } else {
+    nextTick(() => {
+      resetForm(formRef.value);
+      Object.keys(creatForm).forEach(key => {
+        creatForm[key] = "";
+      });
+      creatForm.infantId = undefined
+    });
+
+
+  }
+};
+
+function checkFormData() {
+  if (!formRef.value) return false;
+  let isPass = true;
+  formRef.value.validate(val => {
+    console.log("验证的值", val);
+    isPass = val as boolean;
+  });
+  return isPass;
+}
+
+const rules = reactive({
+  infantName: [{required: true, message: "请输入姓名", trigger: "blur"}],
+  infantBirthday: [{required: true, message: "请选择生日", trigger: "change"}],
+  infantGender: [{required: true, message: "请选择性别", trigger: "change"}],
+  infantParentPhone: rulesList.phone
+});
+
+
+const creatStudent = () => {
+  console.log("新建学员", creatForm);
+  if (!checkFormData()) return;
+  const parmeter = creatForm;
+
+  add(parmeter).then((res: any) => {
+    if (res.code == 200) {
+      console.log("添加学员", res);
+      ElMessage({
+        message: "添加成功.",
+        type: "success"
+      });
+      getStudent();
+      dialogFormVisible.value = false;
+    } else {
+      ElMessage({
+        message: "添加失败.",
+        type: "error"
+      });
+    }
+
+  });
+};
+
+function updateStudentList() {
+  if (!checkFormData()) return;
+  const parameter = {...creatForm};
+
+  update(parameter)
+    .then((res: any) => {
+      if (res.code == 200) {
+        ElMessage({
+          message: "更新成功.",
+          type: "success"
+        });
+        getStudent();
+      } else {
+        ElMessage({
+          message: "更新失败.",
+          type: "error"
+        });
+      }
+
+    })
+    .catch((err: any) => {
+      ElMessage({
+        message: "更新失败.",
+        type: "error"
+      });
+      console.log("删除错误信息", err);
+    });
+  dialogFormVisible.value = false;
+}
+
+function deleteStudentById(infantId: number) {
+  ElMessageBox.confirm("确定要删除所选学员?", "Warning", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning"
+  })
+    .then(() => {
+      infantInfoDelete({'学员对应主键': infantId})
+        .then((res: any) => {
+          if (res.code === 200) {
+            ElMessage({
+              message: "删除成功.",
+              type: "success"
+            });
+            getStudent();
+          } else {
+            ElMessage({
+              message: "删除失败.",
+              type: "error"
+            });
+          }
+
+        })
+        .catch((err: any) => {
+          ElMessage({
+            message: "删除失败.",
+            type: "error"
+          });
+          console.log("删除错误信息", err);
+        });
+    })
+    .catch(() => {
+    });
+}
+
+function importStudentData(formData: any) {
+  console.log("上传文件", formData.get("file"));
+  infantInfoImport(formData).then((res: any) => {
+    const {message, code} = res;
+    if (code == 200) {
+      getStudent();
+      ElMessage.success(message);
+    } else {
+      ElMessage.error(message);
+    }
+    console.log("上传文件");
+  });
+}
+
+const filterStudentData = reactive({
+  pageNum: 1,
+  pageSize,
+  infantGender: undefined,
+  fuzzyQuery: ""
+});
+
+const tableData = reactive({
+  pageNum: 0,
+  pageSize: 0,
+  total: 0,
+  totalPage: 1,
+  list: []
+});
+const getStudent = () => {
+  const parmeter = filterStudentData;
+  list(parmeter).then((res) => {
+    const {data} = res;
+    tableData.pageNum = data.pageNum;
+    tableData.list = data.list;
+    tableData.total = data.total;
+    console.log("学校列表", data, tableData);
+  });
+};
+getStudent()
+
+function handleSizeChange(size: number) {
+  filterStudentData.pageSize = size;
+  getStudent();
+}
+
+function handleCurrentChange(currentPage: number) {
+  filterStudentData.pageNum = currentPage;
+  getStudent();
+  console.log("页吗改变", filterStudentData);
+}
+
+</script>
+
+<style>
+</style>
