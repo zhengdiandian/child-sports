@@ -1,6 +1,5 @@
 import {createRouter, createWebHashHistory} from "vue-router";
 import BasicLayout from "@/layout/BasicLayout.vue";
-import SimpleLayout from "@/layout/SimpleLayout.vue";
 
 /*
  * showLeftMenu  ： false  不显示在侧边导航
@@ -28,6 +27,17 @@ export const publicRouters = [
     name: "login",
     component: () =>
       import(/* webpackChunkName: "login" */ "@/views/Login.vue")
+  },
+  {
+    meta: {
+      title: "Login",
+      fullScreen: true,
+      showLeftMenu: false
+    },
+    path: "/report",
+    name: "report",
+    component: () =>
+      import(/* webpackChunkName: "phoneReport" */ "@/views/toddlerDataManagement/phoneReport.vue")
   }
 ];
 const routes = [
@@ -94,73 +104,73 @@ const routes = [
         name: "addTestRecord",
         component: () => import("@/views/toddlerDataManagement/addTestRecord.vue")
       },
-      {
-        meta: {
-          id: 4,
-          title: "校内班级对比"
-        },
-        path: "schoolClassComparison",
-        name: "schoolClassComparison",
-        component: () =>
-          import("@/views/dataOverview/SchoolClassComparison.vue")
-      },
-      {
-        meta: {
-          id: 5,
-          title: "学段纵向对比"
-        },
-        path: "longitudinalComparisonOfGrades",
-        name: "longitudinalComparisonOfGrades",
-        component: () =>
-          import("@/views/dataOverview/LongitudinalComparisonOfGrades.vue")
-      },
-      {
-        meta: {
-          id: 6,
-          title: "年度纵向对比"
-        },
-        path: "yearToYearComparison",
-        name: "yearToYearComparison",
-        component: () =>
-          import("../views/dataOverview/YearToYearComparison.vue")
-      },
-
-      {
-        meta: {
-          id: 45,
-          title: "学生数据"
-        },
-        name: "studentIndex",
-        path: "studentIndex",
-        reTo: "studentData",
-        redirect: "/dataOverview/studentIndex/studentData",
-        component: SimpleLayout,
-        children: [
-          {
-            meta: {
-              id: 45,
-              title: "学生数据",
-              showLeftMenu: false
-
-            },
-            name: "studentData",
-            path: "studentData",
-            component: () => import("@/views/dataOverview/studentData.vue")
-          },
-          {
-            meta: {
-              id: 45,
-              title: "自定目标",
-              showLeftMenu: false
-
-            },
-            name: "studentInfoDetail",
-            path: "studentInfoDetail",
-            component: () => import("@/views/dataOverview/studentDetail.vue")
-
-          }
-        ]
-      }
+      // {
+      //   meta: {
+      //     id: 4,
+      //     title: "校内班级对比"
+      //   },
+      //   path: "schoolClassComparison",
+      //   name: "schoolClassComparison",
+      //   component: () =>
+      //     import("@/views/dataOverview/SchoolClassComparison.vue")
+      // },
+      // {
+      //   meta: {
+      //     id: 5,
+      //     title: "学段纵向对比"
+      //   },
+      //   path: "longitudinalComparisonOfGrades",
+      //   name: "longitudinalComparisonOfGrades",
+      //   component: () =>
+      //     import("@/views/dataOverview/LongitudinalComparisonOfGrades.vue")
+      // },
+      // {
+      //   meta: {
+      //     id: 6,
+      //     title: "年度纵向对比"
+      //   },
+      //   path: "yearToYearComparison",
+      //   name: "yearToYearComparison",
+      //   component: () =>
+      //     import("../views/dataOverview/YearToYearComparison.vue")
+      // },
+      //
+      // {
+      //   meta: {
+      //     id: 45,
+      //     title: "学生数据"
+      //   },
+      //   name: "studentIndex",
+      //   path: "studentIndex",
+      //   reTo: "studentData",
+      //   redirect: "/dataOverview/studentIndex/studentData",
+      //   component: SimpleLayout,
+      //   children: [
+      //     {
+      //       meta: {
+      //         id: 45,
+      //         title: "学生数据",
+      //         showLeftMenu: false
+      //
+      //       },
+      //       name: "studentData",
+      //       path: "studentData",
+      //       component: () => import("@/views/dataOverview/studentData.vue")
+      //     },
+      //     {
+      //       meta: {
+      //         id: 45,
+      //         title: "自定目标",
+      //         showLeftMenu: false
+      //
+      //       },
+      //       name: "studentInfoDetail",
+      //       path: "studentInfoDetail",
+      //       component: () => import("@/views/dataOverview/studentDetail.vue")
+      //
+      //     }
+      //   ]
+      // }
     ]
   },
 

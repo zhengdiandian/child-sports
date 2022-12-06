@@ -1,14 +1,14 @@
 import router from "./router";
-import { ElMessage } from "element-plus";
+import {ElMessage} from "element-plus";
 import "nprogress/nprogress.css"; // progress bar style
-import { getToken } from "@/utils/auth"; // get token from cookie
+import {getToken} from "@/utils/auth"; // get token from cookie
 // import getPageTitle from '@/utils/get-page-title'
 import setting from "../setting";
 import store from "@/store";
 
 // NProgress.configure({ showSpinner: true }) // NProgress Configuration
 
-const whiteList = ["/login"]; // no redirect whitelist
+const whiteList = ["/login", '/report']; // no redirect whitelist
 
 router.beforeEach(async (to, from, next) => {
   // start progress bar

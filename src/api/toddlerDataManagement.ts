@@ -11,17 +11,36 @@ const api = {
   listProjects: "/sportsManagement/peManagement/peList/listProjects",
   peListDelete: "/sportsManagement/peManagement/peList/delete",
   infantInfoImport: '/infantTestRecord/infantInfo/import',
-  infantTestRecordAdd: "/infantTestRecord/infantTestRecord/add",
-  infantTestRecordDelete: '/infantTestRecord/infantTestRecord/delete',
-  infantTestRecordExport: ' /infantTestRecord/infantTestRecord/export',
-  infantTestRecordImport: '/infantTestRecord/infantTestRecord/import',
-  infantTestRecordList: '/infantTestRecord/infantTestRecord/list',
+  infantTestRecordAdd: "/infantTestRecord/testRecord/add",
+  infantTestRecordDelete: '/infantTestRecord/testRecord/delete',
+  infantTestRecordExport: ' /infantTestRecord/testRecord/export',
+  infantTestRecordImport: '/infantTestRecord/testRecord/import',
+  infantTestRecordList: '/infantTestRecord/testRecord/list',
   listSingle: '/infantTestRecord/infantTestRecord/listSingle',
-  infantTestRecordUpdate: '/infantTestRecord/infantTestRecord/update',
+  infantTestRecordUpdate: '/infantTestRecord/testRecord/update',
   Curve: '/infantTestRecord/recordShare/Curve',
   report: '/infantTestRecord/recordShare/report',
-  infantTestRecordDownloadTemplate: '/infantTestRecord/infantTestRecord/downloadTemplate'
+  infantTestRecordDownloadTemplate: '/infantTestRecord/testRecord/downloadTemplate',
+  getInfant: '/infantTestRecord/testRecord/getInfant'
 };
+
+export function report(parameter: object, loading = true) {
+  return request({
+    method: "GET",
+    url: api.report,
+    params: parameter,
+    loading
+  });
+}
+
+export function getInfant(parameter: object, loading = true) {
+  return request({
+    method: "post",
+    url: api.getInfant,
+    params: parameter,
+    loading
+  });
+}
 
 export function infantTestRecordDownloadTemplate(parameter: object, loding = true) {
   return request({

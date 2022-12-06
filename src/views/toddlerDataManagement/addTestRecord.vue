@@ -12,8 +12,8 @@
         </div>
         <div>
           <el-button
-            type="text"
             class="text-gray-700 text-lg"
+            type="text"
             @click="$router.go(-1)"
           >
             <span class="iconfont icon-fanhui text-2xl"></span>
@@ -21,139 +21,223 @@
           </el-button>
         </div>
       </div>
-      <div class="mx-auto w-1/3 mt-24">
+      <div
+        v-if="!isSelected"
+        class="mx-auto w-1/2 mt-14"
+      >
+        <div class="">
+          <span class="text-black">选择学员：</span>
+          <el-input
+            v-model="filterStudentData.fuzzyQuery"
+            class="w-[75%]"
+            placeholder="请输入学生姓名或手机号码"
+          >
+            <template #prefix>
+              <el-icon class="el-input__icon">
+                <Search />
+              </el-icon>
+            </template>
+          </el-input>
+          <el-button
+            class="ml-4"
+            size="large"
+            type="warning"
+            @click="getList"
+          >
+            查询
+          </el-button>
+        </div>
+        <el-table
+          :border="true"
+          :data="tableData.list"
+          :header-cell-style="{background:'#3470D0',color:'white'}"
+          class="mt-8"
+        >
+          <el-table-column
+            align="center"
+            label="姓名"
+            prop="infantName"
+            width="120"
+          />
+          <el-table-column
+            align="center"
+            label="性别"
+            prop="infantGender"
+            width="60"
+          />
+
+
+          <el-table-column
+            align="center"
+            label="生日"
+            prop="infantBirthday"
+            width="120"
+          >
+            <template #default="scope">
+              <div>
+                {{ dateFormat(scope.row.infantBirthday, "yyyy-mm-dd") }}
+              </div>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            align="center"
+            label="家长手机号码"
+            prop="infantParentPhone"
+            width="190"
+          />
+
+
+          <el-table-column
+            align="center"
+            fixed="right"
+            label="操作"
+            min-width="60"
+            prop="address"
+            width="auto"
+          >
+            <template #default="scope">
+              <el-link
+                type="primary"
+                @click="selectedStudentClick(scope.row)"
+              >
+                选择
+              </el-link>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div
+        v-if="isSelected"
+        class="mx-auto w-1/3 mt-14"
+      >
+        <div class="flex justify-end mb-12">
+          <el-button
+            size="large"
+            type="warning"
+            @click="isSelected = false"
+          >
+            重新选择
+          </el-button>
+        </div>
         <el-form
           ref="ruleFormRef"
           :model="ruleForm"
           :rules="rules"
-          label-width="auto"
-          class="demo-ruleForm space-y-10"
           :size="formSize"
+          class="demo-ruleForm space-y-4"
+          label-width="auto"
         >
+          <!--          <template>-->
           <el-form-item
-            label="身高："
-            prop="randomtestName"
+            label="姓名："
+            prop="xxx"
+          >
+            <span class="text-black">{{ currentStudent.infantName }}</span>
+          </el-form-item>
+          <el-form-item
+            label="性别："
+          >
+            <span>{{ currentStudent.infantGender }}</span>
+          </el-form-item>
+          <el-form-item
+            label="生日："
+          >
+            <span>{{ dateFormat(currentStudent.infantBirthday, "yyyy-mm-dd") }}</span>
+          </el-form-item>
+          <el-form-item
+            label="家长手机号码："
+          >
+            <span>{{ currentStudent.infantParentPhone }}</span>
+          </el-form-item>
+          <!--          </template>-->
+
+          <el-form-item
+            v-for="item in ruleForm.projectData"
+            :key="item.projectName"
+            :label="item.projectName+':'"
           >
             <el-input
-              v-model="ruleForm.randomtestName"
-              placeholder="请输入身高："
+              v-model="item.value"
+
+              :placeholder="`请输入${item.projectName}：`"
             >
-              <template #append><span class="text-black">cm</span></template>
+              <template #append>
+                <span class="text-black">cm</span>
+              </template>
             </el-input>
-
           </el-form-item>
 
+
           <el-form-item
-            label="体重："
-            prop="randomtestName"
+            label="尊重："
+            prop="respectScore"
           >
-            <el-input
-              v-model="ruleForm.randomtestName"
-              placeholder="请输入体重"
-            >
-              <template #append><span class="text-black">kg</span></template>
-            </el-input>
-
-          </el-form-item>
-
-          <el-form-item
-            label="坐位体前屈："
-            prop="randomtestName"
-          >
-            <el-input
-              v-model="ruleForm.randomtestName"
-              placeholder="请输入坐位体前屈"
-            >
-              <template #append><span class="text-black">cm</span></template>
-            </el-input>
-
-          </el-form-item>
-
-          <el-form-item
-            label="立定跳远："
-            prop="randomtestName"
-          >
-            <el-input
-              v-model="ruleForm.randomtestName"
-              placeholder="请输入立定跳远"
-            >
-              <template #append><span class="text-black">cm</span></template>
-            </el-input>
-
-          </el-form-item>
-
-          <el-form-item
-            label="双脚连续跳："
-            prop="randomtestName"
-          >
-            <el-input
-              v-model="ruleForm.randomtestName"
-              placeholder="请输入双脚连续跳"
-            >
-              <template #append><span class="text-black">s</span></template>
-            </el-input>
-
-          </el-form-item>
-
-          <el-form-item
-            label="10米折返跑："
-            prop="randomtestName"
-          >
-            <el-input
-              v-model="ruleForm.randomtestName"
-              placeholder="请输入10米折返跑"
-            >
-              <template #append><span class="text-black">s</span></template>
-            </el-input>
-
+            <el-rate
+              v-model="ruleForm.respectScore"
+              class="mt-1.5"
+              clearable
+              size="large"
+            ></el-rate>
           </el-form-item>
           <el-form-item
-            label="网球掷远："
-            prop="randomtestName"
-          >
-            <el-input
-              v-model="ruleForm.randomtestName"
-              placeholder="请输入网球掷远："
-            >
-              <template #append><span class="text-black">m</span></template>
-            </el-input>
-
-          </el-form-item>
-          <el-form-item
-            label="走平衡木："
-            prop="randomtestName"
-          >
-            <el-input
-              v-model="ruleForm.randomtestName"
-              placeholder="请输入走平衡木"
-            >
-              <template #append><span class="text-black">s</span></template>
-            </el-input>
-
-          </el-form-item>
-
-          <el-form-item
-            label="训练建议："
-            prop="randomtestIntroduction"
-          >
-            <el-input
-              v-model="ruleForm.randomtestIntroduction"
-              type="textarea"
-              placeholder="请输入训练建议"
-              :autosize="{ minRows: 4, maxRows: 8 }"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label="训练建议："
+            label="激情："
             prop="randomtestIntroduction"
           >
             <el-rate
+              v-model="ruleForm.respectScore"
+              class="mt-1.5"
+              clearable
               size="large"
-
             ></el-rate>
           </el-form-item>
+          <el-form-item
+            label="坚韧："
+            prop="toughScore"
+          >
+            <el-rate
+              v-model="ruleForm.toughScore"
+              class="mt-1.5"
+              clearable
+              size="large"
+            ></el-rate>
+          </el-form-item>
+          <el-form-item
+            label="正直："
+            prop="uprightScore"
+          >
+            <el-rate
+              v-model="ruleForm.uprightScore"
+              class="mt-1.5"
+              clearable
+              size="large"
+            ></el-rate>
+          </el-form-item>
+          <el-form-item
+            label="团队："
+            prop="teamSpiritScore"
+          >
+            <el-rate
+              v-model="ruleForm.teamSpiritScore"
+              class="mt-1.5"
+              clearable
+              size="large"
+            ></el-rate>
+          </el-form-item>
+          <el-form-item
+            label="训练建议："
+            prop="randomtestIntroduction"
+          >
+            <el-input
+              v-model="ruleForm.trainAdvice"
+              :autosize="{ minRows: 4, maxRows: 8 }"
+              placeholder="请输入训练建议"
+              type="textarea"
+            ></el-input>
+          </el-form-item>
+
           <el-form-item>
-            <div class=" w-full flex justify-around pt-20">
+            <div class=" w-full flex justify-around py-20">
               <el-button
                 class="w-36"
                 @click="resetForm(ruleFormRef)"
@@ -163,10 +247,10 @@
 
               <el-button
                 v-loading="isLoading"
-                :element-loading-text="'btnText'"
                 :disabled="isLoading"
-                type="primary"
+                :element-loading-text="btnText+'中'"
                 class="w-36"
+                type="primary"
                 @click="submitForm(ruleFormRef)"
               >
                 {{ btnText }}并生成报告
@@ -179,14 +263,17 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {computed, onMounted, ref, watch} from "vue";
+import {Search} from "@element-plus/icons-vue";
+
+import {computed, onMounted, reactive, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import type {ElForm} from "element-plus";
 import {ElMessage} from "element-plus";
-import {getProjectsByGrade, randomTestRelease} from "@/api/randomTest";
-import {Grade, SchoolType} from "@/utils/baseData";
 import rules from "@/utils/rules";
 import {useStore} from "vuex";
+import {getInfant, infantTestRecordAdd} from "@/api/toddlerDataManagement";
+import {pageSize} from "@/hooks/pagination";
+import dateFormat from "@/utils/dateFormat.js";
 
 const router = useRouter();
 type FormInstance = InstanceType<typeof ElForm>
@@ -202,6 +289,13 @@ const city = ref({
   }
 
 });
+const currentStudent = ref({})
+const selectedStudentClick = (row: any) => {
+  currentStudent.value = row
+  ruleForm.value.infantId = row.infantId
+  isSelected.value = true
+
+}
 const goBack = () => {
   router.replace({
     name: "samplingManagement", query: {
@@ -209,37 +303,61 @@ const goBack = () => {
     }
   });
 };
-let ruleForm = ref({
-  recordId: undefined,
-  randomtestName: "",
-  randomtestSchoolType: SchoolType[0].label,
-  randomtestGrade: Grade[0].value,
-  randomtestIntroduction: "",
-  randomtestProjectList: undefined,
-  randomtestAddress: "",
-  randomtestClass: "",
-  randomtestStartDate: "",
-  randomtestEndDate: "",
-  randomtestProvinceCode: "",
-  randomtestCityCode: "",
-  randomtestDistrictCode: ""
+
+const tableData = reactive({
+  pageNum: 0,
+  pageSize: 0,
+  total: 0,
+  totalPage: 1,
+  list: []
 });
-watch(() => ruleForm.value.randomtestGrade, (grade) => {
-  console.log(grade);
-  getProjectsByGrade({grade}).then(res => {
-    options.value = res.data;
+const filterStudentData = reactive({
+  pageNum: 1,
+  pageSize,
+  infantGender: undefined,
+  fuzzyQuery: ""
+});
+
+const getList = () => {
+  const parmeter = filterStudentData;
+  getInfant(parmeter).then((res) => {
+    const {data} = res;
+    // tableData.pageNum = data.pageNum;
+    tableData.list = data;
+    // tableData.total = data.total;
+    // console.log("学校列表", data, tableData);
   });
-}, {
-  immediate: true
-});
-const gradeList = computed(() => {
-  debugger
-  if (ruleForm.value.randomtestSchoolType === SchoolType[0].label) {
-    return Grade.slice(0, 6);
-  } else {
-    return Grade.slice(6, Grade.length);
-  }
-});
+};
+getList()
+const findProject = (projectName: string) => ruleForm.value.projectData.find(item => item.projectName === projectName)
+const defaultData = {
+  "allOutScore": 0,
+  "passionScore": 0,
+  "projectData": [
+    {"projectName": "身高", "value": 135, unit: 'cm'},
+    {projectName: "体重", "value": "", unit: 'kg'},
+    {projectName: "坐位体前屈", "value": "", unit: 'cm'},
+    {projectName: "立定跳远", "value": "", unit: 'kg'},
+    {projectName: "双脚连续跳", "value": "", unit: 's'},
+    {projectName: "10米折返跑", "value": "", unit: 's'},
+    {projectName: "网球掷远", "value": "", unit: 'm'},
+    {projectName: "走平衡木", "value": "", unit: 's'},
+
+  ],
+  "recordId": undefined,
+  infantId: undefined,
+  "respectScore": 0,
+  "teamSpiritScore": 0,
+  "testTime": "2022-12-05T05:10:32.820Z",
+  "toughScore": 0,
+  "trainAdvice": "string",
+  "uprightScore": 4
+}
+let ruleForm = ref(
+  defaultData
+);
+
+
 onMounted(() => {
   if (route.query.recordId) {
     debugger
@@ -255,13 +373,9 @@ onMounted(() => {
   }
 });
 
+const isSelected = ref(false);
+
 const btnText = computed(() => route.query.recordId ? "修改" : "保存");
-const disabledDate = (time: Date) => {
-  return time.getTime() < +new Date(ruleForm.value.randomtestStartDate);
-};
-const disabledStartDate = (time: Date) => {
-  return time.getTime() < Date.now();
-};
 // const rules = reactive()
 
 const submitForm = (formEl: FormInstance | undefined) => {
@@ -271,13 +385,16 @@ const submitForm = (formEl: FormInstance | undefined) => {
       isLoading.value = true;
       const parmeter = {...ruleForm.value};
       // parmeter.randomtestProjectList = JSON.stringify(parmeter.randomtestProjectList)
-      randomTestRelease(parmeter, !!(route.query.recordId)).then((res: any) => {
+      infantTestRecordAdd(parmeter, !!(route.query.recordId)).then((res: any) => {
         if (res.code === 200) {
           ElMessage({
             message: "成功",
             type: "success"
           });
           resetForm(formEl);
+          if (!route.query.recordId) {
+            return isSelected.value = false
+          }
           goBack();
         }
         isLoading.value = false;
@@ -303,32 +420,12 @@ const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   city.value.area.district = "";
   formEl.resetFields();
-  ruleForm = ref({
-    recordId: undefined,
-    randomtestName: "",
-    randomtestSchoolType: SchoolType[0].label,
-    randomtestGrade: Grade[0].value,
-    randomtestIntroduction: "",
-    randomtestProjectList: undefined,
-    randomtestAddress: "",
-    randomtestClass: "",
-    randomtestStartDate: "",
-    randomtestEndDate: "",
-    randomtestProvinceCode: "",
-    randomtestCityCode: "",
-    randomtestDistrictCode: ""
-  });
+  ruleForm = ref(defaultData);
 };
-const changeSelectCity = (area) => {
-  ruleForm.value.randomtestProvinceCode = area.province;
-  ruleForm.value.randomtestCityCode = area.city;
-  ruleForm.value.randomtestDistrictCode = area.district;
-  console.log("选择城市", ruleForm, area);
-};
+
 const checkAll = ref(false);
 const isIndeterminate = ref(true);
-// const checkedCities = ref(['Shanghai', 'Beijing'])
-// const cities = ['Shanghai', 'Beijing', 'Guangzhou', 'Shenzhen']
+
 
 const handleCheckAllChange = (val: boolean) => {
   ruleForm.value.randomtestProjectList = val ? options.value : [];

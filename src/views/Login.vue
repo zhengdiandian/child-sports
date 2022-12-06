@@ -1,11 +1,11 @@
 <script setup>
-import { reactive, ref } from "vue";
-import { useRouter } from "vue-router";
-import { check, get, getUserRole, login, refresh } from "@/api";
-import { setToken, setUserRoles } from "@/utils/auth.js";
+import {reactive, ref} from "vue";
+import {useRouter} from "vue-router";
+import {check, get, getUserRole, login, refresh} from "@/api";
+import {setToken, setUserRoles} from "@/utils/auth.js";
 import LoadingButton from "@/components/LodingButton.vue";
-import { useStore } from "vuex";
-import { ElMessage } from "element-plus";
+import {useStore} from "vuex";
+import {ElMessage} from "element-plus";
 
 const form = reactive({
   captcha: "",
@@ -77,7 +77,7 @@ const getRole = (id) => {
     setUserRoles(data[0]);
     await store.dispatch("setStyle", "white");
     await store.dispatch("User/getRoutes");
-    await router.replace({ name: "overview" });
+    await router.replace({name: "studentManagement"});
   }).catch(e => {
     const { code, message } = e;
 
@@ -115,30 +115,30 @@ const getRole = (id) => {
           </div>
           <input
             v-model.trim="form.username"
-            type="text"
             class="px-2 h-10 py-1 text-xs focus:outline-none focus:ring-0 w-full   border-0 border-b border-gray-400"
             placeholder="请输入用户名"
+            type="text"
           >
           <input
             v-model.trim="form.password"
-            type="password"
-            placeholder="请输入密码"
             class="px-2 h-10 py-1 text-xs focus:outline-none focus:ring-0 w-full   border-0 border-b border-gray-400"
+            placeholder="请输入密码"
+            type="password"
           >
           <div class="relative h-full">
             <input
               v-model.trim="form.captcha"
+              class="block h-10 px-2  py-1 text-xs focus:outline-none focus:ring-0 w-full   border-0 border-b border-gray-400 "
               placeholder="请输入验证码"
               type="text"
-              class="block h-10 px-2  py-1 text-xs focus:outline-none focus:ring-0 w-full   border-0 border-b border-gray-400 "
               @keydown.enter="submit"
             >
             <div class="absolute h-full  bottom-1/2 right-0 translate-y-1/2 flex justify-end item-align ">
               <div class="w-5/12  h-full py-1 ">
                 <img
-                  class="h-full"
                   :src="imgURL"
                   alt=""
+                  class="h-full"
                 >
               </div>
               <button
