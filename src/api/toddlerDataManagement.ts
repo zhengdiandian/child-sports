@@ -18,11 +18,20 @@ const api = {
   infantTestRecordList: '/infantTestRecord/testRecord/list',
   listSingle: '/infantTestRecord/infantTestRecord/listSingle',
   infantTestRecordUpdate: '/infantTestRecord/testRecord/update',
-  Curve: '/infantTestRecord/recordShare/Curve',
+  curve: '/infantTestRecord/recordShare/curve',
   report: '/infantTestRecord/recordShare/report',
   infantTestRecordDownloadTemplate: '/infantTestRecord/testRecord/downloadTemplate',
   getInfant: '/infantTestRecord/testRecord/getInfant'
 };
+
+export function curve(parameter: object, loading = true) {
+  return request({
+    method: "GET",
+    url: api.curve,
+    params: parameter,
+    loading
+  });
+}
 
 export function report(parameter: object, loading = true) {
   return request({

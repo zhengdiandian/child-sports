@@ -133,7 +133,9 @@
             <el-link
               class="mr-10"
               type="primary"
-              @click="openCreateDialog(false, scope.row)"
+              @click="$router.push({name:'addTestRecord', query: {
+                recordId:scope.row.recordId
+              }})"
             >
               编辑
             </el-link>

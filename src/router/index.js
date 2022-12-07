@@ -30,7 +30,7 @@ export const publicRouters = [
   },
   {
     meta: {
-      title: "Login",
+      title: "报告",
       fullScreen: true,
       showLeftMenu: false
     },
@@ -38,6 +38,17 @@ export const publicRouters = [
     name: "report",
     component: () =>
       import(/* webpackChunkName: "phoneReport" */ "@/views/toddlerDataManagement/phoneReport.vue")
+  },
+  {
+    meta: {
+      title: "变化曲线",
+      fullScreen: true,
+      showLeftMenu: false
+    },
+    path: "/curve",
+    name: "curve",
+    component: () =>
+      import(/* webpackChunkName: "phoneReport" */ "@/views/toddlerDataManagement/curve.vue")
   }
 ];
 const routes = [

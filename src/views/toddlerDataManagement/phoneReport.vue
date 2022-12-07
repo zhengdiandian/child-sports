@@ -276,7 +276,7 @@ onMounted(() => {
       </div>
       <div class="flex flex-col">
         <div class="text-xl">
-          {{ reportData.weight }} <span class="text-sm">cm</span>
+          {{ reportData.weight }} <span class="text-sm">kg</span>
         </div>
         <div class="text-black-1 text-center">
           体重
@@ -284,7 +284,7 @@ onMounted(() => {
       </div>
       <div class="flex flex-col">
         <div class="text-xl">
-          {{ reportData.bmi }} <span class="text-sm">cm</span>
+          {{ reportData.bmi }} <span class="text-sm"></span>
         </div>
         <div class="text-black-1 text-center">
           BMI
@@ -324,7 +324,7 @@ onMounted(() => {
         class="mt-4 "
       >
         <h3 class="text-black text-xl">
-          {{ project.projectName }} <span class="text-sm text-black-1">({{ project.title }})</span>
+          {{ project.projectName }} <span class="text-sm text-black-1">({{ project.title }})/ {{ project.unit }}</span>
         </h3>
         <div class="w-full  flex justify-start flex-nowrap  pr-2 ">
           <div class="w-full overflow-hidden">

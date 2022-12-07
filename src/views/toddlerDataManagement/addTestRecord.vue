@@ -397,13 +397,14 @@ onMounted(() => {
   if (route.query.recordId) {
     debugger
     ruleForm.value = store.state.RandomTest.randomtest;
-
-    try {
-      console.log(`city', ${city.value.area}`, store.state.RandomTest.randomtest, store.state.RandomTest.randomtest.randomtestDistrictCode);
-      city.value.area.district = store.state.RandomTest.randomtest.randomtestDistrictCode + "";
-    } catch (e) {
-      console.error(e);
-    }
+    isSelected.value = true
+    route.meta.title = '修改测试记录'
+    // try {
+    //   console.log(`city', ${city.value.area}`, store.state.RandomTest.randomtest, store.state.RandomTest.randomtest.randomtestDistrictCode);
+    //   city.value.area.district = store.state.RandomTest.randomtest.randomtestDistrictCode + "";
+    // } catch (e) {
+    //   console.error(e);
+    // }
 
   }
 });
@@ -457,20 +458,6 @@ const resetForm = (formEl: FormInstance | undefined) => {
   city.value.area.district = "";
   formEl.resetFields();
   ruleForm = ref(defaultData);
-};
-
-const checkAll = ref(false);
-const isIndeterminate = ref(true);
-
-
-const handleCheckAllChange = (val: boolean) => {
-  ruleForm.value.randomtestProjectList = val ? options.value : [];
-  isIndeterminate.value = false;
-};
-const handleCheckedCitiesChange = (value: string[]) => {
-  const checkedCount = value.length;
-  checkAll.value = checkedCount === options.value.length;
-  isIndeterminate.value = checkedCount > 0 && checkedCount < options.value.length;
 };
 </script>
 

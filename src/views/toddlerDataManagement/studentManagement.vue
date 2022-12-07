@@ -5,7 +5,7 @@
         type="text"
         @click="openCreateDialog(true)"
       >
-        <span class="iconfont icon-jiajianzujianjiahao"/>
+        <span class="iconfont icon-jiajianzujianjiahao" />
         添加学员
       </el-button>
       <div>
@@ -14,8 +14,8 @@
           class="flex flex-wrap"
         >
           <el-form-item
-            label="性别："
             class="mr-5"
+            label="性别："
           >
             <el-radio-group
               v-model="filterStudentData.infantGender"
@@ -48,40 +48,39 @@
           </el-button>
         </el-form>
       </div>
-
     </div>
 
     <div>
       <el-table
-        :data="tableData.list"
         :border="true"
+        :data="tableData.list"
         :header-cell-style="{background:'#3470D0',color:'white'}"
       >
         <el-table-column
           align="center"
-          type="index"
           label="序号"
+          type="index"
           width="60"
         />
 
         <el-table-column
           align="center"
-          prop="infantName"
           label="姓名"
+          prop="infantName"
           width="90"
         />
         <el-table-column
           align="center"
-          prop="infantGender"
           label="性别"
+          prop="infantGender"
           width="60"
         />
 
 
         <el-table-column
           align="center"
-          prop="infantBirthday"
           label="生日"
+          prop="infantBirthday"
           width="120"
         >
           <template #default="scope">
@@ -93,32 +92,31 @@
 
         <el-table-column
           align="center"
-          prop="infantParentPhone"
           label="家长手机号码"
+          prop="infantParentPhone"
           width="190"
         />
 
 
         <el-table-column
           align="center"
-          prop="address"
           label="测试记录"
-          width="auto"
           min-width="220px"
+          prop="address"
+          width="auto"
         >
           <template #default="scope">
-
             <el-link
+              :disabled="scope.row.recordNum ===0"
               class="mr-10"
               type="primary"
-              :disabled="scope.row.recordNum ===0"
-              @click="openCreateDialog(false, scope.row)"
+              @click="$router.push({name: 'testRecord'})"
             >
               {{ scope.row.recordNum }}条
             </el-link>
             <el-link
               type="primary"
-              @click="deleteStudentById(scope.row.infantId)"
+              @click="$router.push({name: 'curve',query:{infantId: scope.row.infantId}})"
             >
               变化曲线
             </el-link>
@@ -126,14 +124,13 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="address"
-          label="操作"
-          width="auto"
-          min-width="220px"
           fixed="right"
+          label="操作"
+          min-width="220px"
+          prop="address"
+          width="auto"
         >
           <template #default="scope">
-
             <el-link
               class="mr-10"
               type="primary"
@@ -153,16 +150,16 @@
     </div>
     <div class="flex justify-between pt-5">
       <ImportAndExportFile
+        @downloadTemplate="downloadTemplate"
         @exportData="infantInfoExport"
         @importData="importStudentData"
-        @downloadTemplate="downloadTemplate"
       />
       <el-pagination
         v-model:currentPage="filterStudentData.pageNum"
         v-model:page-size="filterStudentData.pageSize"
         :page-sizes="pageSizes"
-        layout="total, sizes, prev, pager, next, jumper"
         :total="tableData.total"
+        layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -228,15 +225,13 @@
         label="家长手机号码："
         prop="infantParentPhone"
         required
-
       >
         <el-input
+          v-model="creatForm.infantParentPhone"
           placeholder="请输入家长手机号码"
           type="number"
-          v-model="creatForm.infantParentPhone"
         />
       </el-form-item>
-
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -256,7 +251,7 @@
   </el-dialog>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 
 import {nextTick, reactive, ref, watch} from "vue";
 
