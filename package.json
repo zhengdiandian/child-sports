@@ -30,6 +30,7 @@
     "injection-js": "^2.4.0",
     "nprogress": "^0.2.0",
     "numeral": "^2.0.6",
+    "qrcode.vue": "^3.3.3",
     "typescript": "^4.6.3",
     "vue": "^3.2.34",
     "vue-router": "^4.0.0-0",

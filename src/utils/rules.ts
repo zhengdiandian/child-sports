@@ -163,7 +163,32 @@ const validDate = [
   }
 ];
 
+const createRateRule = (str: string) => [
+  {
+    validator: (rule: any, value: number, callback: any) => {
+      debugger
+      if (value === 0) {
+
+        callback(new Error(`请选择${str}评分`))
+      } else {
+        callback();
+      }
+    },
+    required: true,
+    // message: "请选择项目",
+
+    trigger: "change"
+  }
+]
 export default {
+  allOutScore: createRateRule("全力以赴"),
+  respectScore: createRateRule("尊重"),
+  passionScore: createRateRule("激情"),
+  toughScore: createRateRule("坚韧"),
+  uprightScore: createRateRule("正直"),
+  teamSpiritScore: createRateRule("团队"),
+  coach: createRule("请输入测试老师"),
+  testTime: date,
   classId: createRule("请选择班级", "change"),
   matchTypes: createRule("请选择导出类型", "change"),
   projects: createRule("请选择项目", "change"),

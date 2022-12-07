@@ -153,6 +153,27 @@
           <!--          </template>-->
 
           <el-form-item
+            label="测试老师："
+            prop="coach"
+          >
+            <el-input
+              v-model="ruleForm.coach"
+              placeholder="请输入测试老师"
+              type="text"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="测试日期："
+            prop="testTime"
+          >
+            <el-date-picker
+              v-model="ruleForm.testTime"
+              class="w-full"
+              placeholder="选择测试时间"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item
             v-for="item in ruleForm.projectData"
             :key="item.projectName"
             :label="item.projectName+':'"
@@ -182,10 +203,10 @@
           </el-form-item>
           <el-form-item
             label="激情："
-            prop="randomtestIntroduction"
+            prop="passionScore"
           >
             <el-rate
-              v-model="ruleForm.respectScore"
+              v-model="ruleForm.passionScore"
               class="mt-1.5"
               clearable
               size="large"
@@ -219,6 +240,17 @@
           >
             <el-rate
               v-model="ruleForm.teamSpiritScore"
+              class="mt-1.5"
+              clearable
+              size="large"
+            ></el-rate>
+          </el-form-item>
+          <el-form-item
+            label="全力以赴："
+            prop="allOutScore"
+          >
+            <el-rate
+              v-model="ruleForm.allOutScore"
               class="mt-1.5"
               clearable
               size="large"
@@ -265,7 +297,7 @@
 <script lang="ts" setup>
 import {Search} from "@element-plus/icons-vue";
 
-import {computed, onMounted, reactive, ref} from "vue";
+import {computed, onMounted, reactive, ref, unref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import type {ElForm} from "element-plus";
 import {ElMessage} from "element-plus";
@@ -289,6 +321,8 @@ const city = ref({
   }
 
 });
+const userName = computed(() => store.state.User.userName);
+
 const currentStudent = ref({})
 const selectedStudentClick = (row: any) => {
   currentStudent.value = row
@@ -331,13 +365,14 @@ const getList = () => {
 getList()
 const findProject = (projectName: string) => ruleForm.value.projectData.find(item => item.projectName === projectName)
 const defaultData = {
+  coach: unref(userName),
   "allOutScore": 0,
   "passionScore": 0,
   "projectData": [
     {"projectName": "身高", "value": 135, unit: 'cm'},
     {projectName: "体重", "value": "", unit: 'kg'},
     {projectName: "坐位体前屈", "value": "", unit: 'cm'},
-    {projectName: "立定跳远", "value": "", unit: 'kg'},
+    {projectName: "立定跳远", "value": "", unit: 'cm'},
     {projectName: "双脚连续跳", "value": "", unit: 's'},
     {projectName: "10米折返跑", "value": "", unit: 's'},
     {projectName: "网球掷远", "value": "", unit: 'm'},
@@ -348,10 +383,10 @@ const defaultData = {
   infantId: undefined,
   "respectScore": 0,
   "teamSpiritScore": 0,
-  "testTime": "2022-12-05T05:10:32.820Z",
+  "testTime": "",
   "toughScore": 0,
   "trainAdvice": "string",
-  "uprightScore": 4
+  "uprightScore": 0
 }
 let ruleForm = ref(
   defaultData
@@ -391,6 +426,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
             message: "成功",
             type: "success"
           });
+          isLoading.value = false;
           resetForm(formEl);
           if (!route.query.recordId) {
             return isSelected.value = false

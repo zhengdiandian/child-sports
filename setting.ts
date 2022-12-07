@@ -1,4 +1,4 @@
 const setting = {
-  name: "济南智慧体育云",
+  name: "优小享",
 };
 export default setting;

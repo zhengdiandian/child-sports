@@ -105,7 +105,7 @@ const getRole = (id) => {
         </div>
         <div class="lg:w-5/12 w-full space-y-4 pr-10  absolute right-0 top-0 px-6">
           <h1 class="mt-20 text-xl font-medium ">
-            济南智慧体育云管理平台
+            优小享管理平台
           </h1>
           <div
             v-show="msg"

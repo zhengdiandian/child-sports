@@ -5,7 +5,17 @@ import {nextTick, onMounted, ref} from "vue";
 import dateFormat from "@/utils/dateFormat.js";
 // import echarts from 'echarts' // echarts theme
 import * as echarts from "echarts";
+import a from '@/img/优秀.png'
+import b from '@/img/良好.png'
+import c from '@/img/及格.png'
+import d from '@/img/不及格.png'
 
+const imgUrlObject = {
+  '优秀': a,
+  '良好': b,
+  '及格': c,
+  '不及格': d
+}
 const route = useRoute();
 
 const recordId = route.query.recordId
@@ -229,7 +239,12 @@ onMounted(() => {
       </div>
     </div>
     <div class="pl-2 pt-8 flex   flex-nowrap">
-      <div class="rounded-full w-12 h-12 bg-red"></div>
+      <div class="rounded-full w-12 h-12  overflow-hidden">
+        <img
+          alt=""
+          src="@/img/pic1.png"
+        >
+      </div>
       <div class="flex-auto pl-2">
         <div>
           学生姓名：{{ reportData.infantName }} <span class="pl-4">性别：{{ reportData.infantGender }}</span>
@@ -243,7 +258,7 @@ onMounted(() => {
 
   <div class="pl-2 pt-2 pr-1 border-b-2 border-b-gray bg-white">
     <div class="flex justify-between">
-      <div class="text-xl text-[#3F240] ">
+      <div class="text-2xl text-[#3F240] ">
         身体成分
       </div>
       <div>
@@ -278,8 +293,8 @@ onMounted(() => {
     </div>
   </div>
 
-  <div class="pl-2 pt-3 pr-1 border-b-2 border-b-gray bg-white">
-    <div class="text-xl text-[#3F240] ">
+  <div class="pl-2 pt-3 pb-6 pr-1 border-b-2 border-b-gray bg-white">
+    <div class="text-2xl text-[#3F240] ">
       运动能力
     </div>
     <div class="w-full h-[20rem]">
@@ -309,7 +324,7 @@ onMounted(() => {
         class="mt-4 "
       >
         <h3 class="text-black text-xl">
-          {{ project.projectName }}
+          {{ project.projectName }} <span class="text-sm text-black-1">({{ project.title }})</span>
         </h3>
         <div class="w-full  flex justify-start flex-nowrap  pr-2 ">
           <div class="w-full overflow-hidden">
@@ -341,7 +356,51 @@ onMounted(() => {
       </div>
     </template>
   </div>
-  <div class="pl-2 pt-3 pr-1">
+  <div class=" pt-3 pr-1 bg-white">
+    <div class="flex justify-around flex-wrap">
+      <div
+        v-for="(item,index ) in reportData.spiritData"
+        :key="index"
+        :style="{width: item.projectName.length>2 }"
+        class="flex flex-normal w-1/2"
+      >
+        <span class="flex-auto text-right">{{ item.projectName }}：</span>
+        <el-rate
+          v-model="item.score"
+          disabled
+          text-color="#ff9900"
+        />
+      </div>
+    </div>
+    <div class="flex justify-around items-center mt-4">
+      <div>
+        <div class="text-black-1 pb-4">
+          综合得分
+        </div>
+        <div>
+          <span class="text-3xl text-[#FF8F22]">{{ reportData?.score }}</span>/{{ reportData.fullScore ?? 100 }}
+        </div>
+      </div>
+      <div class="">
+        <div class="w-28 ">
+          <img :src="imgUrlObject[reportData?.scoreLevel]">
+        </div>
+        <div class="text-center  text-2xl">
+          {{ reportData?.scoreLevel }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pl-2 pt-4 pb-10 pr-1  bg-white">
+    <div class="text-2xl text-black-1 ">
+      训练建议
+    </div>
+    <div
+      class="overflow-ellipsis w-full break-words pt-2 text-xl"
+      style="text-indent: 2em"
+    >
+      {{ reportData?.trainAdvice }}
+    </div>
   </div>
 </template>
 
