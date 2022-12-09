@@ -11,8 +11,8 @@
       </div>
       <div>
         <el-button
-          type="text"
           class="text-gray-700 text-lg"
+          type="text"
           @click="$router.replace({name: 'accountManagement',query: {
             now: +new Date(),
           }})"
@@ -27,9 +27,9 @@
         ref="ruleFormRef"
         :model="creatForm"
         :rules="rules"
-        label-width="auto"
-        class="demo-ruleForm "
         :size="formSize"
+        class="demo-ruleForm "
+        label-width="auto"
       >
         <el-form-item
           label="角色："
@@ -48,14 +48,15 @@
           </el-select>
         </el-form-item>
         <el-form-item
+          v-if="![5].includes(creatForm.roleId)"
           label="地区："
           prop="district"
         >
           <SchoolSelect
             ref="schoolSelect"
-            v-model:province-code.number="creatForm.province"
             v-model:city-code.number="creatForm.city"
             v-model:district-code.number="creatForm.district"
+            v-model:province-code.number="creatForm.province"
             :show-info="false"
             :showitems="[ ]"
           ></SchoolSelect>
@@ -93,9 +94,9 @@
           <el-select
             v-model="creatForm.schoolName"
             :disabled="!creatForm.schoolType || !creatForm.district"
-            filterable
             :loading="loading"
             class="w-full"
+            filterable
             placeholder="请选择学校名称："
             @visible-change="visibleChange"
           >
@@ -136,8 +137,20 @@
         >
           <el-input
             v-model="creatForm.password"
-            placeholder="请输入密码"
             class="w-full date-picker"
+            placeholder="请输入密码"
+          />
+        </el-form-item>
+        <el-form-item
+          v-if="[5].includes(creatForm.roleId)"
+          label="单 位："
+          prop=""
+          required
+        >
+          <el-input
+            v-model="creatForm.schoolName"
+            autocomplete="off"
+            placeholder="请输入单位"
           />
         </el-form-item>
         <el-form-item
@@ -147,8 +160,8 @@
         >
           <el-input
             v-model="creatForm.teacherCode"
-            placeholder="请输入教职工号"
             class="w-full date-picker"
+            placeholder="请输入教职工号"
           />
         </el-form-item>
         <el-form-item
@@ -158,39 +171,45 @@
         >
           <el-input
             v-model="creatForm.teacherName"
-            placeholder="请输入教职姓名"
             class="w-full "
+            placeholder="请输入教职姓名"
           />
         </el-form-item>
         <el-form-item
+          v-if="![5].includes(creatForm.roleId)"
           label="手机号："
           prop="phone"
         >
           <el-input
             v-model="creatForm.phone"
-            placeholder="请输入手机号"
             class="w-full date-picker"
+            placeholder="请输入手机号"
             type="number"
           />
         </el-form-item>
         <el-form-item
+          v-if="![5].includes(creatForm.roleId)"
           label="身份证号："
           prop="identity"
         >
           <el-input
             v-model="creatForm.identity"
-            placeholder="请输入身份证号："
             class="w-full"
+            placeholder="请输入身份证号："
             type="number"
           />
         </el-form-item>
         <el-form-item
+          v-if="![5].includes(creatForm.roleId)"
+
           label="性別："
         >
           {{ IdCard(creatForm.identity, 2) }}
           <span class="el-form-item__label pl-6">生日： </span><span>{{ IdCard(creatForm.identity, 1) }}</span>
         </el-form-item>
         <el-form-item
+          v-if="![5].includes(creatForm.roleId)"
+
           class="mr-5"
           label="民族："
           prop="nationality"
@@ -210,14 +229,16 @@
 
 
         <el-form-item
+          v-if="![5].includes(creatForm.roleId)"
+
           label="简 介："
           prop="note"
         >
           <el-input
             v-model="ruleForm.note"
-            type="textarea"
-            placeholder="请输入简介"
             :autosize="{ minRows: 4, maxRows: 8 }"
+            placeholder="请输入简介"
+            type="textarea"
           ></el-input>
         </el-form-item>
         <el-form-item>
@@ -231,10 +252,10 @@
 
             <el-button
               v-loading="isLoading"
-              :element-loading-text="'加载中...'"
               :disabled="isLoading"
-              type="primary"
+              :element-loading-text="'加载中...'"
               class="w-36"
+              type="primary"
               @click="submitForm(ruleFormRef)"
             >
               确认{{ btnText }}
@@ -256,18 +277,18 @@
   <Password :username="editData?.username"></Password>
 </template>
 <script lang="ts" setup>
-import { computed, nextTick, provide, reactive, ref } from "vue";
-import { onBeforeRouteLeave, useRoute } from "vue-router";
-import type { ElForm } from "element-plus";
-import { ElMessage } from "element-plus";
-import { SchoolType } from "@/utils/baseData";
+import {computed, nextTick, provide, reactive, ref} from "vue";
+import {onBeforeRouteLeave, useRoute} from "vue-router";
+import type {ElForm} from "element-plus";
+import {ElMessage} from "element-plus";
+import {SchoolType} from "@/utils/baseData";
 import rules from "@/utils/rules";
-import { useStore } from "vuex";
-import { listAll, register, updateAdmin } from "@/api/accountManagement";
+import {useStore} from "vuex";
+import {listAll, register, updateAdmin} from "@/api/accountManagement";
 import national from "@/utils/national.js";
-import { getAllSchoolNames } from "@/api";
-import { IdCard, sortArr } from "@/utils/index";
-import { getCityName, getDistrictCode, getDistrictName, getProvinceName } from "@/utils/getCity";
+import {getAllSchoolNames} from "@/api";
+import {IdCard, sortArr} from "@/utils/index";
+import {getCityName, getDistrictCode, getDistrictName, getProvinceName} from "@/utils/getCity";
 import Password from "@/components/Password.vue";
 
 onBeforeRouteLeave(() => {
@@ -294,22 +315,22 @@ console.error(11111, getDistrictCode("天桥区"));
 
 let creatForm: any = reactive(
   {
-    "birthday": "2022-09-29T02:19:14.188Z",
+    "birthday": "",
     "city": "370100",
     "district": "370104",
-    "identity": "352230199807030019",
+    "identity": "",
     "nationality": "汉族",
-    "nickName": "xxx",
-    "password": "123456",
-    "phone": "18888335875",
+    "nickName": "",
+    "password": "",
+    "phone": undefined,
     "province": "370000",
-    "roleId": undefined,
+    "roleId": 5,
     "schoolId": undefined,
     "schoolName": undefined,
-    "schoolType": "九年一贯",
+    "schoolType": "",
     "teacherCode": undefined,
     "teacherName": undefined,
-    "username": "18888335875",
+    "username": "",
     id: undefined
   }
 );
@@ -327,7 +348,8 @@ if (editData?.id) {
 }
 const roleList = ref([]);
 listAll().then(({ data }: any) => {
-  roleList.value = data;
+  console.log('111', data)
+  roleList.value = data.filter((item: any) => ([1, 5].includes(item.id)));
 });
 const schoolOptions = ref([]);
 

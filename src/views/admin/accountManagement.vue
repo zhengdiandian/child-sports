@@ -9,8 +9,8 @@
           @click="goEdit"
         >
           <span
-            class="iconfont icon-jiajianzujianjiahao pr-1.5"
             :class="creatForm.dailytestSchoolId && checkPermissions('add')? 'text-blue': ''"
+            class="iconfont icon-jiajianzujianjiahao pr-1.5"
           />
 
           <span class="text-black underline text-lg font">添加账号</span>
@@ -65,8 +65,8 @@
             class-name="text-black"
             label="账号"
             prop="username"
-            width="120"
             show-overflow-tooltip
+            width="120"
           >
           </el-table-column>
           <el-table-column
@@ -82,8 +82,8 @@
             class-name="text-black"
             label="昵称"
             prop="nickName"
-            width="120"
             show-overflow-tooltip
+            width="120"
           >
           </el-table-column>
           <el-table-column
@@ -147,41 +147,41 @@
           </el-table-column>
           <el-table-column
             align="center"
+            fixed="right"
             label="操作"
             prop="address"
             width="260px"
-            fixed="right"
           >
             <template #default="scope">
               <el-link
+                :disabled="scope.row.username === 'admin'"
                 class="mr-4"
                 type="primary"
-                :disabled="scope.row.username === 'admin'"
               >
                 <el-switch
                   v-model="scope.row.status"
-                  :width="60"
+                  :active-value="1"
                   :disabled="scope.row.username === 'admin'"
-                  inline-prompt
+                  :inactive-value="0"
+                  :width="60"
                   active-text="启用"
                   inactive-text="停用"
-                  :active-value="1"
-                  :inactive-value="0"
+                  inline-prompt
                   @change="changeStatus(scope.row.id,$event)"
                 />
               </el-link>
               <el-link
+                :disabled="!checkPermissions('update')"
                 class="mr-4"
                 type="primary"
-                :disabled="!checkPermissions('update')"
                 @click="editClickHandle(scope.row)"
               >
                 编辑
               </el-link>
               <el-link
+                :disabled="!checkPermissions('update')"
                 class="mr-4"
                 type="primary"
-                :disabled="!checkPermissions('update')"
                 @click="resetPassword(scope.row)"
               >
                 重置密码
@@ -220,23 +220,23 @@
   </div>
 
   <Password
-    type="reset"
     :user-info="resetPasswordData"
+    type="reset"
   ></Password>
 </template>
 
 <script lang="ts" setup>
-import { onActivated, provide, reactive, ref } from "vue";
-import type { ElForm } from "element-plus";
-import { ElMessage, ElMessageBox } from "element-plus";
-import { adminDelete, list, listAll, register, updateStatus } from "@/api/accountManagement";
-import { filterGradeList } from "@/utils/baseData";
-import type { ExamListAddResult } from "@/interface/examListAdd";
-import type { BizUpdateSchoolexamParam } from "@/interface/examUpdate";
-import { useRoute, useRouter } from "vue-router";
-import { pageSize, pageSizes } from "@/hooks/pagination";
+import {onActivated, provide, reactive, ref} from "vue";
+import type {ElForm} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
+import {adminDelete, list, listAll, register, updateStatus} from "@/api/accountManagement";
+import {filterGradeList} from "@/utils/baseData";
+import type {ExamListAddResult} from "@/interface/examListAdd";
+import type {BizUpdateSchoolexamParam} from "@/interface/examUpdate";
+import {useRoute, useRouter} from "vue-router";
+import {pageSize, pageSizes} from "@/hooks/pagination";
 import checkPermissions from "@/hooks/checkPermissions";
-import { useStore } from "vuex";
+import {useStore} from "vuex";
 import Password from "@/components/Password.vue";
 
 onActivated(() => {
@@ -278,7 +278,8 @@ const changeStatus = (id: any, status: any) => {
 const filterData: any = reactive({
   fuzzyQuery: "",
   pageNum: 1,
-  pageSize
+  pageSize,
+  ifInfant: 1
 });
 // const changeDate = (dataArr: [string, string]) => {
 //   filterData.dailytestDateMin = dataArr[0];
