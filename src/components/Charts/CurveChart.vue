@@ -129,10 +129,7 @@ export default {
           if (radarIndex === 0) return item
           return item - arr[radarIndex - 1]
         }), 'arr2')
-        arr2.forEach(a => {
-          arrList.push(a)
-
-        })
+        arrList.push(arr2)
 
       })
 
