@@ -102,39 +102,69 @@ export default {
     },
     setOptions() {
       const chartData = this.chartData;
-      // if(!chartData.standard)return
-      // const childData = chartData.dataList.sort((a,b) => a.age - b.age).map(data => data.projectData)
-      // console.log('data', childData)
+      if (!chartData.standard) return
+      const colors = ['#516CC9', '#AECE79', 'rgba(253, 238, 204, 1)', '#F46160', '#73C0DE']
+
+      const isReverse = ['10米折返跑', '双脚连续跳', '走平衡木'].includes(chartData.projectName);
+      if (isReverse) {
+        colors.reverse();
+      }
+      const childData = chartData.dataList.sort((a, b) => a.age - b.age).map(data => data.projectData)
+      console.log('data', childData)
       const scoreList = ([1, 2, 3, 4, 5]).map((item, index) => item + '分');
       const ageList = ['3岁', '3岁半', '4岁', "4岁半", '5岁', '5岁半', '6岁']
       const xList = [3, 3.5, 4, 4.5, 5, 5.5, 6]
-      // const standardKeys = Object.keys(chartData.standard).sort((a, b) => a - b)
-      // const series = scoreList.map((key, index) => {
-      //   return {
-      //     name: key,
-      //     type: 'line',
-      //     stack: 'Total',
-      //     areaStyle: {},
-      //     emphasis: {
-      //       focus: 'series'
-      //     },
-      //     data: standardKeys.map(s => {
-      //       return chartData.standard[s][index]
-      //     })
-      //   }
-      // })
-      // console.log(series, 1111)
+      const source = chartData.dataList.map(item => [item.age % 3, item.projectData])
+      const standardKeys = Object.keys(chartData.standard).sort((a, b) => a - b)
+      console.log('standard', standardKeys)
+      const arrList = []
+      scoreList.map((key, index) => {
+        const arr = standardKeys.map(item => chartData.standard[item][index])
+        const arr2 = arr.map((item, radarIndex) => {
+          if (radarIndex === 0) return item
+          return item - arr[radarIndex - 1]
+        })
+        console.log(arr, 'arr')
+        console.log(arr.map((item, radarIndex) => {
+          if (radarIndex === 0) return item
+          return item - arr[radarIndex - 1]
+        }), 'arr2')
+        arr2.forEach(a => {
+          arrList.push(a)
+
+        })
+
+      })
+
+      console.log(arrList, 'arrList')
+      const series = colors.map((key, index) => {
+        console.log(index, 'index')
+        debugger
+        return {
+          // offset: 100,
+
+          name: index,
+          type: 'bar',
+          areaStyle: {},
+          emphasis: {
+            focus: 'series'
+          },
+          barCategoryGap: "0%",
+          stack: "level",
+          itemStyle: {
+            normal: {
+              color: colors[index]
+            }
+          },
+          data: ageList.map((item, i) => arrList[index][i])
+        }
+      })
+
+      console.log(series, 1111)
       const option = {
         dataset: [
           {
-            source: [
-              [0, 200],
-              [1.4, 500],
-              [2.3, 600],
-              [3, 600],
-              // [1.2, 600],
-
-            ]
+            source,
           },
           // {
           //   transform: {
@@ -185,10 +215,6 @@ export default {
               },
               formatter: function (value, index) {
                 return ageList[index];
-
-                if (index > 2) {
-
-                }
               },
               rich: {
                 table: {
@@ -198,7 +224,7 @@ export default {
                 }
               }
             },
-            type: 'value',
+            type: 'category',
             // boundaryGap: false,
             data: xList,
 
@@ -206,17 +232,27 @@ export default {
         ],
         yAxis: [
           {
-            type: 'value'
+            inverse: isReverse,
+            type: 'value',
+            // scale: true
+
           },
 
         ],
-        series: [{
-          name: 'line',
-          // type: 'scatter',
-          type: 'line',
-
-          datasetIndex: 0
-        },
+        series: [...series,
+          {
+            name: 'line',
+            // type: 'scatter',
+            type: 'line',
+            symbol: 'circle',
+            symbolSize: 10,
+            datasetIndex: 0,
+            itemStyle: {
+              color: 'rgba(255, 148, 3, 1)',
+              borderColor: 'rgba(255, 148, 3, 1)',
+              borderWidth: 2
+            },
+          },
           // {
           //   name: 'line',
           //   type: 'line',
