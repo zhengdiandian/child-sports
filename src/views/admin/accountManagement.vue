@@ -66,7 +66,7 @@
             label="账号"
             prop="username"
             show-overflow-tooltip
-            width="120"
+            width="auto"
           >
           </el-table-column>
           <el-table-column
@@ -74,7 +74,7 @@
             class-name="text-black"
             label="角色"
             prop="role"
-            width="100"
+            width="auto"
           >
           </el-table-column>
           <el-table-column
@@ -83,56 +83,65 @@
             label="昵称"
             prop="nickName"
             show-overflow-tooltip
-            width="120"
-          >
-          </el-table-column>
-          <el-table-column
-            align="center"
-            class-name="text-black"
-            label="省份"
-            prop="province"
-            width="90"
-          />
-          <el-table-column
-            align="center"
-            class-name="text-black"
-            label="市"
-            prop="city"
-            width="90"
-          >
-          </el-table-column>
-          <el-table-column
-            align="center"
-            class-name="text-black"
-            label="区"
-            prop="district"
-            width="90"
-          />
-          <el-table-column
-            align="center"
-            class-name="text-black"
-            label="学校"
-            prop="schoolName"
             width="auto"
-          />
-          <el-table-column
-            align="center"
-            label="学校类型"
-            prop="schoolType"
-            width="120"
           >
-            <template #default="{ row: { schoolType } }">
-              <div class="truncate">
-                {{ schoolType ?? "--" }}
-              </div>
-            </template>
           </el-table-column>
           <el-table-column
             align="center"
-            label="手机号"
-            prop="phone"
-            width="220"
-          />
+            class-name="text-black"
+            label="单位"
+            prop="schoolName"
+            show-overflow-tooltip
+            width="auto"
+          >
+          </el-table-column>
+          <!--          <el-table-column-->
+          <!--            align="center"-->
+          <!--            class-name="text-black"-->
+          <!--            label="省份"-->
+          <!--            prop="province"-->
+          <!--            width="90"-->
+          <!--          />-->
+          <!--          <el-table-column-->
+          <!--            align="center"-->
+          <!--            class-name="text-black"-->
+          <!--            label="市"-->
+          <!--            prop="city"-->
+          <!--            width="90"-->
+          <!--          >-->
+          <!--          </el-table-column>-->
+          <!--          <el-table-column-->
+          <!--            align="center"-->
+          <!--            class-name="text-black"-->
+          <!--            label="区"-->
+          <!--            prop="district"-->
+          <!--            width="90"-->
+          <!--          />-->
+          <!--          <el-table-column-->
+          <!--            align="center"-->
+          <!--            class-name="text-black"-->
+          <!--            label="学校"-->
+          <!--            prop="schoolName"-->
+          <!--            width="auto"-->
+          <!--          />-->
+          <!--          <el-table-column-->
+          <!--            align="center"-->
+          <!--            label="学校类型"-->
+          <!--            prop="schoolType"-->
+          <!--            width="120"-->
+          <!--          >-->
+          <!--            <template #default="{ row: { schoolType } }">-->
+          <!--              <div class="truncate">-->
+          <!--                {{ schoolType ?? "&#45;&#45;" }}-->
+          <!--              </div>-->
+          <!--            </template>-->
+          <!--          </el-table-column>-->
+          <!--          <el-table-column-->
+          <!--            align="center"-->
+          <!--            label="手机号"-->
+          <!--            prop="phone"-->
+          <!--            width="220"-->
+          <!--          />-->
           <el-table-column
             align="center"
             label="状态"

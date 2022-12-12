@@ -1,7 +1,7 @@
 <script setup>
-import { computed } from "vue";
-import { useStore } from "vuex";
-import { mdiMenu } from "@mdi/js";
+import {computed} from "vue";
+import {useStore} from "vuex";
+import {mdiMenu} from "@mdi/js";
 import AsideMenuList from "@/components/AsideMenuList.vue";
 import NavBarItem from "@/components/NavBarItem.vue";
 import Icon from "@/components/Icon.vue";
@@ -44,18 +44,18 @@ const menuClick = (event, item) => {
   <aside
     v-show="!isFullScreen"
     id="aside"
+    :class="[ asideStyle, isAsideMobileExpanded ? 'left-0' : '-left-60', isAsideLgActive ? 'block' : 'lg:hidden xl:block' ]"
     class="w-60 disabled fixed top-0 z-[99999] h-screen transition-position lg:left-0
     dark:border-r dark:border-gray-800 dark:bg-gray-900/70 lg:dark:bg-gray-900 xl:dark:bg-gray-900/70"
-    :class="[ asideStyle, isAsideMobileExpanded ? 'left-0' : '-left-60', isAsideLgActive ? 'block' : 'lg:hidden xl:block' ]"
   >
     <div
-      class="flex flex-row w-full flex-1  items-end dark:bg-transparent py-4"
       :class="[ asideBrandStyle ]"
+      class="flex flex-row w-full flex-1  items-end dark:bg-transparent py-4"
     >
       <nav-bar-item
-        type="hidden lg:flex xl:hidden"
         :active-color="asideMenuCloseLgStyle"
         active
+        type="hidden lg:flex xl:hidden"
         @click="asideLgClose"
       >
         <icon
@@ -66,11 +66,11 @@ const menuClick = (event, item) => {
       </nav-bar-item>
       <div class="flex-1 px-3 flex  nowrap flex-col items-center">
         <img
-          class="w-10"
-          src="@/img/logo.png"
           :alt="setting.name"
+          class="w-25"
+          src="@/img/logo.png"
         />
-        <b class="font-black text-center text-2xl ">{{ setting.name }}</b>
+        <!--        <b class="font-black text-center text-2xl ">{{ setting.name }}</b>-->
       </div>
     </div>
     <div>
@@ -78,8 +78,8 @@ const menuClick = (event, item) => {
         <p
           v-if="typeof menuGroup === 'string'"
           :key="`a-${index}`"
-          class="p-3 text-xs uppercase"
           :class="[ asideMenuLabelStyle ]"
+          class="p-3 text-xs uppercase"
         >
           {{ menuGroup }}
         </p>

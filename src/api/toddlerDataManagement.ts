@@ -13,7 +13,7 @@ const api = {
   infantInfoImport: '/infantTestRecord/infantInfo/import',
   infantTestRecordAdd: "/infantTestRecord/testRecord/add",
   infantTestRecordDelete: '/infantTestRecord/testRecord/delete',
-  infantTestRecordExport: ' /infantTestRecord/testRecord/export',
+  infantTestRecordExport: '/infantTestRecord/testRecord/export',
   infantTestRecordImport: '/infantTestRecord/testRecord/import',
   infantTestRecordList: '/infantTestRecord/testRecord/list',
   listSingle: '/infantTestRecord/infantTestRecord/listSingle',
@@ -21,8 +21,19 @@ const api = {
   curve: '/infantTestRecord/recordShare/curve',
   report: '/infantTestRecord/recordShare/report',
   infantTestRecordDownloadTemplate: '/infantTestRecord/testRecord/downloadTemplate',
-  getInfant: '/infantTestRecord/testRecord/getInfant'
+  getInfant: '/infantTestRecord/testRecord/getInfant',
+  getRecordInfo: '/infantTestRecord/testRecord/getRecordInfo'
 };
+
+export function getRecordInfo(parameter: object, loading = true) {
+  return request({
+    method: "GET",
+    url: api.getRecordInfo,
+    params: parameter,
+    loading
+  });
+}
+
 
 export function curve(parameter: object, loading = true) {
   return request({
@@ -107,10 +118,10 @@ export function infantTestRecordDelete(parameter: object, loading = true) {
   });
 }
 
-export function infantTestRecordAdd(data: any, loading = true) {
+export function infantTestRecordAdd(data: any, isUpdate = false, loading = true) {
   return request({
     method: "POST",
-    url: api.infantTestRecordAdd,
+    url: isUpdate ? api.infantTestRecordUpdate : api.infantTestRecordAdd,
     data,
     loading
   });

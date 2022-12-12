@@ -293,6 +293,7 @@ import Password from "@/components/Password.vue";
 
 onBeforeRouteLeave(() => {
   store.commit("Admin/setEditData", {});
+  isEdit.value = false
 });
 const dialogFormVisible = ref(false);
 provide("dialogFormVisible", dialogFormVisible);

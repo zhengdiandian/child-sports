@@ -6,7 +6,8 @@ import * as echarts from "echarts";
 // console.warn(window.echarts, "echarts");
 import("./theme/macarons.js");
 const unwarp = (obj) => obj && (obj.__v_raw || obj.valueOf() || obj);
-
+// import ecStat from 'echarts-stat';
+// echarts.registerTransform(ecStat.transform.regression);
 export default {
   mixins: [resize],
   props: {
@@ -96,35 +97,58 @@ export default {
       return Math.ceil(number) * Math.pow(10, bite);
     },
     initChart() {
-      this.chart = echarts.init(this.$refs.chart, "macarons");
+      this.chart = echarts.init(this.$refs.chart,);
       this.setOptions(this.chartData);
     },
     setOptions() {
       const chartData = this.chartData;
       // if(!chartData.standard)return
+      // const childData = chartData.dataList.sort((a,b) => a.age - b.age).map(data => data.projectData)
+      // console.log('data', childData)
       const scoreList = ([1, 2, 3, 4, 5]).map((item, index) => item + '分');
-      const ageList = ['3岁', '3岁半', '4岁', "4岁半", '5岁', '6岁']
-      const standardKeys = Object.keys(chartData.standard).sort((a, b) => a - b)
-      const series = scoreList.map((key, index) => {
-        return {
-          name: key,
-          type: 'line',
-          stack: 'Total',
-          areaStyle: {},
-          emphasis: {
-            focus: 'series'
-          },
-          data: standardKeys.map(s => {
-            return chartData.standard[s][index]
-          })
-        }
-      })
-      console.log(series, 1111)
+      const ageList = ['3岁', '3岁半', '4岁', "4岁半", '5岁', '5岁半', '6岁']
+      const xList = [3, 3.5, 4, 4.5, 5, 5.5, 6]
+      // const standardKeys = Object.keys(chartData.standard).sort((a, b) => a - b)
+      // const series = scoreList.map((key, index) => {
+      //   return {
+      //     name: key,
+      //     type: 'line',
+      //     stack: 'Total',
+      //     areaStyle: {},
+      //     emphasis: {
+      //       focus: 'series'
+      //     },
+      //     data: standardKeys.map(s => {
+      //       return chartData.standard[s][index]
+      //     })
+      //   }
+      // })
+      // console.log(series, 1111)
       const option = {
+        dataset: [
+          {
+            source: [
+              [0, 200],
+              [1.4, 500],
+              [2.3, 600],
+              [3, 600],
+              // [1.2, 600],
+
+            ]
+          },
+          // {
+          //   transform: {
+          //     type: 'ecStat:regression',
+          //     config: {
+          //       method: 'exponential'
+          //     }
+          //   }
+          // }
+        ],
         tooltip: {
           trigger: 'axis',
           axisPointer: {
-            type: 'cross',
+            // type: 'cross',
             label: {
               backgroundColor: '#6a7985'
             }
@@ -150,13 +174,34 @@ export default {
           left: '3%',
           right: '4%',
           bottom: '3%',
-          containLabel: true
+          // containLabel: true
         },
         xAxis: [
           {
-            type: 'category',
-            boundaryGap: false,
-            data: ageList
+            axisLabel: {
+              // interval:0,
+              textStyle: {
+                color: '#333',
+              },
+              formatter: function (value, index) {
+                return ageList[index];
+
+                if (index > 2) {
+
+                }
+              },
+              rich: {
+                table: {
+                  lineHeight: 30,
+                  align: 'center',
+                  fontSize: 14, // table里文字字体大小
+                }
+              }
+            },
+            type: 'value',
+            // boundaryGap: false,
+            data: xList,
+
           }
         ],
         yAxis: [
@@ -165,7 +210,25 @@ export default {
           },
 
         ],
-        series: [...series]
+        series: [{
+          name: 'line',
+          // type: 'scatter',
+          type: 'line',
+
+          datasetIndex: 0
+        },
+          // {
+          //   name: 'line',
+          //   type: 'line',
+          //   smooth: true,
+          //   datasetIndex: 0,
+          //   symbolSize: 0.1,
+          //   symbol: 'circle',
+          //   label: { show: true, fontSize: 16 },
+          //   labelLayout: { dx: -20 },
+          //   encode: { label: 2, tooltip: 1 }
+          // },
+        ]
         //   [
         //   {
         //     name: 'Email',

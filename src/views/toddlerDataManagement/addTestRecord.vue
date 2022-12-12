@@ -113,6 +113,7 @@
       >
         <div class="flex justify-end mb-12">
           <el-button
+            v-if="!recordId"
             size="large"
             type="warning"
             @click="isSelected = false"
@@ -180,11 +181,11 @@
           >
             <el-input
               v-model="item.value"
-
               :placeholder="`请输入${item.projectName}：`"
+              type="number"
             >
               <template #append>
-                <span class="text-black">cm</span>
+                <span class="text-black">{{ item.unit }}</span>
               </template>
             </el-input>
           </el-form-item>
@@ -303,7 +304,7 @@ import type {ElForm} from "element-plus";
 import {ElMessage} from "element-plus";
 import rules from "@/utils/rules";
 import {useStore} from "vuex";
-import {getInfant, infantTestRecordAdd} from "@/api/toddlerDataManagement";
+import {getInfant, getRecordInfo, infantTestRecordAdd} from "@/api/toddlerDataManagement";
 import {pageSize} from "@/hooks/pagination";
 import dateFormat from "@/utils/dateFormat.js";
 
@@ -323,7 +324,7 @@ const city = ref({
 });
 const userName = computed(() => store.state.User.userName);
 
-const currentStudent = ref({})
+const currentStudent = ref({infantName: '', infantBirthday: '', infantGender: '', infantParentPhone: ''})
 const selectedStudentClick = (row: any) => {
   currentStudent.value = row
   ruleForm.value.infantId = row.infantId
@@ -332,7 +333,7 @@ const selectedStudentClick = (row: any) => {
 }
 const goBack = () => {
   router.replace({
-    name: "samplingManagement", query: {
+    name: "testRecord", query: {
       now: +new Date()
     }
   });
@@ -369,7 +370,7 @@ const defaultData = {
   "allOutScore": 0,
   "passionScore": 0,
   "projectData": [
-    {"projectName": "身高", "value": 135, unit: 'cm'},
+    {"projectName": "身高", "value": '', unit: 'cm'},
     {projectName: "体重", "value": "", unit: 'kg'},
     {projectName: "坐位体前屈", "value": "", unit: 'cm'},
     {projectName: "立定跳远", "value": "", unit: 'cm'},
@@ -385,20 +386,28 @@ const defaultData = {
   "teamSpiritScore": 0,
   "testTime": "",
   "toughScore": 0,
-  "trainAdvice": "string",
+  "trainAdvice": "",
   "uprightScore": 0
 }
 let ruleForm = ref(
   defaultData
 );
 
+const recordId = route.query.recordId
 
-onMounted(() => {
-  if (route.query.recordId) {
-    debugger
+onMounted(async () => {
+  if (recordId) {
     ruleForm.value = store.state.RandomTest.randomtest;
     isSelected.value = true
     route.meta.title = '修改测试记录'
+    const {data} = await getRecordInfo({recordId})
+    const {infantName, infantBirthday, infantGender, infantParentPhone} = data
+    currentStudent.value.infantName = infantName
+    currentStudent.value.infantBirthday = infantBirthday
+    currentStudent.value.infantGender = infantGender
+    currentStudent.value.infantParentPhone = infantParentPhone
+    ruleForm.value = data
+    ruleForm.value.recordId = recordId as any
     // try {
     //   console.log(`city', ${city.value.area}`, store.state.RandomTest.randomtest, store.state.RandomTest.randomtest.randomtestDistrictCode);
     //   city.value.area.district = store.state.RandomTest.randomtest.randomtestDistrictCode + "";
@@ -457,7 +466,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   city.value.area.district = "";
   formEl.resetFields();
-  ruleForm = ref(defaultData);
+  ruleForm = ref(JSON.parse(JSON.stringify(defaultData)));
 };
 </script>
 

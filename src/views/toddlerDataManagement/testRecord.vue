@@ -3,7 +3,7 @@
     <div class="flex justify-between">
       <el-button
         type="text"
-        @click="openCreateDialog(true)"
+        @click="$router.push({name: 'addTestRecord'})"
       >
         <span class="iconfont icon-jiajianzujianjiahao" />
         添加测试记录
@@ -223,6 +223,7 @@
     </template>
   </el-dialog>
   <el-dialog
+
     v-model="dialogFormVisible"
     :title="isCreate ? '新建测试记录' : '编辑测试记录'"
   >

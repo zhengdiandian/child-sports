@@ -23,6 +23,16 @@ curve({infantId}).then((res) => {
 </script>
 <template>
   <div class="bg-white">
+    <div class="flex justify-start">
+      <div></div>
+      <div class="text-2xl">
+        xxx
+      </div>
+      <div class="flex flex-col">
+        <div>性别：</div>
+        <div>生日：</div>
+      </div>
+    </div>
     <div>
       <el-tabs
         v-model="activeName"
@@ -39,7 +49,6 @@ curve({infantId}).then((res) => {
         </el-tab-pane>
       </el-tabs>
       <CurveChart
-        v-if="chartData.standard"
         :chart-data="chartData"
       ></CurveChart>
     </div>

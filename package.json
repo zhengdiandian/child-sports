@@ -25,6 +25,7 @@
     "core-js": "^3.6.5",
     "cypress": "^9.5.1",
     "echarts": "^5.3.1",
+    "echarts-stat": "^1.2.0",
     "element-plus": "^2.0.2",
     "file-saver": "^2.0.5",
     "injection-js": "^2.4.0",
