@@ -63,6 +63,8 @@ export default {
     chartData: {
       // deep: true,
       handler(val) {
+        this.chart.dispose()
+        this.initChart()
         this.setOptions(val);
       }
     }
@@ -97,50 +99,67 @@ export default {
       return Math.ceil(number) * Math.pow(10, bite);
     },
     initChart() {
-      this.chart = echarts.init(this.$refs.chart,);
+      this.chart = echarts.init(this.$refs.chart);
       this.setOptions(this.chartData);
     },
     setOptions() {
-      const chartData = this.chartData;
+      const chartData = JSON.parse( JSON.stringify(this.chartData));
       if (!chartData.standard) return
-      const colors = ['#516CC9', '#AECE79', 'rgba(253, 238, 204, 1)', '#F46160', '#73C0DE']
-
+      const colors = ['#CAD3EF','#E7F0D7', '#FDEECC', '#FCCFCF', '#D5ECF5', '#C4E3D5']
+      const scoreList = ([0,1, 2, 3, 4, 5]).map((item, index) => item + '分');
+      if(['身高'].includes(chartData.projectName)){
+        colors.shift()
+        scoreList.shift()
+        Object.keys(chartData.standard).forEach(keys => chartData.standard[keys].shift())
+      }
       const isReverse = ['10米折返跑', '双脚连续跳', '走平衡木'].includes(chartData.projectName);
       if (isReverse) {
         colors.reverse();
+        scoreList.reverse()
       }
       const childData = chartData.dataList.sort((a, b) => a.age - b.age).map(data => data.projectData)
       console.log('data', childData)
-      const scoreList = ([1, 2, 3, 4, 5]).map((item, index) => item + '分');
-      const ageList = ['3岁', '3岁半', '4岁', "4岁半", '5岁', '5岁半', '6岁']
-      const xList = [3, 3.5, 4, 4.5, 5, 5.5, 6]
-      const source = chartData.dataList.map(item => [item.age % 3, item.projectData])
+      const ageList = ['3岁-3岁半', '3岁半-4岁', '4岁-4岁半', "4岁半-5岁", '5岁-5岁半', '5岁半-6岁', '6岁-6岁半']
+      const ageList2 = ['3岁', '3岁半', '4岁', "4岁半", '5岁', '5岁半', '6岁', '六岁半']
+      const xList = [3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5]
+      const source = chartData.dataList.map(item => [item.age , item.projectData])
+      const dataList = [0,1, 2, 3, 4, 5].map( () => [])
       const standardKeys = Object.keys(chartData.standard).sort((a, b) => a - b)
+      let maxDataList = chartData.standard['6.0']
+      // if(isReverse) {
+      //   maxDataList = chartData.standard['3.0']
+      // }
+      const max = Math.ceil( Math.max.apply(null, [Math.abs(maxDataList[maxDataList.length-1] * 2 - maxDataList[maxDataList.length-2]), ...childData]))
+      const min = Math.floor( Math.min.apply(null, [Math.abs(maxDataList[0] * 2 - maxDataList[1]), ...childData]))
+      // alert(min)
+      // alert(`max: ${max}`)
       console.log('standard', standardKeys)
-      const arrList = []
-      scoreList.map((key, index) => {
-        const arr = standardKeys.map(item => chartData.standard[item][index])
-        const arr2 = arr.map((item, radarIndex) => {
-          if (radarIndex === 0) return item
-          return item - arr[radarIndex - 1]
-        })
-        console.log(arr, 'arr')
-        console.log(arr.map((item, radarIndex) => {
-          if (radarIndex === 0) return item
-          return item - arr[radarIndex - 1]
-        }), 'arr2')
-        arrList.push(arr2)
-
+      standardKeys.forEach((key,i) => {
+        // if(['身高'].includes(chartData.projectName))return
+        // if(isReverse) return  chartData.standard[key].push(Math.abs( min))
+        chartData.standard[key].push(Math.abs( max))
       })
-
-      console.log(arrList, 'arrList')
+      console.log( chartData.standard, 'xx')
+      standardKeys.forEach((key,i) => {
+        chartData.standard[key].forEach((num, index) => {
+          if(index === 0) {
+            dataList[index].push(num)
+          }
+          else {
+            dataList[index].push( Math.abs( num - chartData.standard[key][index-1]).toFixed(2))
+          }
+        })
+      })
+      console.log(dataList, 'datalist')
+      // dataList.push(dataList[dataList.length-1])
       const series = colors.map((key, index) => {
         console.log(index, 'index')
         debugger
         return {
-          // offset: 100,
+          // offset: 0,
+          xAxisIndex: 0,
 
-          name: index,
+          name: scoreList[index],
           type: 'bar',
           areaStyle: {},
           emphasis: {
@@ -150,18 +169,43 @@ export default {
           stack: "level",
           itemStyle: {
             normal: {
-              color: colors[index]
+              color: colors[index],
+              // barBorderRadius:[12, 12, 0, 0],
+              label: {
+                // offset: 1,
+                show: index === 4? true: true,
+                position: 'inside',
+                textStyle: { fontSize: '18px', },
+                formatter(param) {
+                  // console.log(param)
+                  const {seriesIndex,componentIndex, value, dataIndex} = param
+                  if(dataIndex ===6) return scoreList[seriesIndex]
+                  return  ''
+                }
+              },
             }
           },
-          data: ageList.map((item, i) => arrList[index][i])
+
+
+          data: dataList[index]
         }
       })
 
-      console.log(series, 1111)
+      console.log(series, 1111, source, 'xxxx')
       const option = {
         dataset: [
           {
-            source,
+            source
+            // : [
+            //           [3, 10],
+            //           [3.2, 18],
+            //         [3.5, 15],
+            //         [4, 15],
+            //         [4.2, 15],
+            //         [5, 15],
+            //         [5.5, 15],
+            //         [6, 15],
+            //         ],
           },
           // {
           //   transform: {
@@ -197,128 +241,87 @@ export default {
         //     saveAsImage: {}
         //   }
         // },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          // containLabel: true
-        },
-        xAxis: [
-          {
-            axisLabel: {
-              // interval:0,
-              textStyle: {
-                color: '#333',
-              },
-              formatter: function (value, index) {
-                return ageList[index];
-              },
-              rich: {
-                table: {
-                  lineHeight: 30,
-                  align: 'center',
-                  fontSize: 14, // table里文字字体大小
-                }
-              }
+        // grid: {
+        //   left: '3%',
+        //   right: '4%',
+        //   bottom: '6%',
+        //   containLabel: true
+        // },
+        xAxis: [{
+          show:false,
+          type: 'category',
+          data: ageList,
+          position: 'bottom',
+          // offset: 20,
+          axisTick: {
+            inside: false,  // 刻度线朝上 或朝下，默认为false为朝下
+            lineStyle: { //刻度线样式
+              color: '#ff9800'
             },
-            type: 'category',
-            // boundaryGap: false,
-            data: xList,
-
           }
-        ],
+        }, {
+          // show:false,
+          boundaryGap: false,
+          position: 'bottom',
+          offset: 30, // 向下偏移，为了不和第一条x轴重合
+          //x轴 轴线
+          axisLine: {
+            show: false
+          },
+          axisLabel: {
+            inside: true,
+            formatter: function (value, index) {
+              return ageList2[index];
+
+
+            },
+          },
+
+          interval:0.5,
+          min:3,
+          max:6.5,
+          type:'value',
+
+          data: xList
+        }],
         yAxis: [
           {
-            inverse: isReverse,
+            // min,
+            max,
+            // inverse: isReverse,
             type: 'value',
             // scale: true
+
+          },  {
+
+            // inverse: isReverse,
+            type: 'value',
+            scale: false
 
           },
 
         ],
         series: [...series,
           {
-            name: 'line',
+            xAxisIndex:1,
+            min:3,
+            name: '测量值',
             // type: 'scatter',
             type: 'line',
             symbol: 'circle',
             symbolSize: 10,
-            datasetIndex: 0,
+            // datasetIndex: 0,
             itemStyle: {
               color: 'rgba(255, 148, 3, 1)',
               borderColor: 'rgba(255, 148, 3, 1)',
               borderWidth: 2
             },
           },
-          // {
-          //   name: 'line',
-          //   type: 'line',
-          //   smooth: true,
-          //   datasetIndex: 0,
-          //   symbolSize: 0.1,
-          //   symbol: 'circle',
-          //   label: { show: true, fontSize: 16 },
-          //   labelLayout: { dx: -20 },
-          //   encode: { label: 2, tooltip: 1 }
-          // },
+
         ]
-        //   [
-        //   {
-        //     name: 'Email',
-        //     type: 'line',
-        //     stack: 'Total',
-        //     areaStyle: {},
-        //     emphasis: {
-        //       focus: 'series'
-        //     },
-        //     data: [120, 132, 101, 134, 90, 230, 210]
-        //   },
-        //   {
-        //     name: 'Union Ads',
-        //     type: 'line',
-        //     stack: 'Total',
-        //     areaStyle: {},
-        //     emphasis: {
-        //       focus: 'series'
-        //     },
-        //     data: [220, 182, 191, 234, 290, 330, 310]
-        //   },
-        //   {
-        //     name: 'Video Ads',
-        //     type: 'line',
-        //     stack: 'Total',
-        //     areaStyle: {},
-        //     emphasis: {
-        //       focus: 'series'
-        //     },
-        //     data: [150, 232, 201, 154, 190, 330, 410]
-        //   },
-        //   {
-        //     name: 'Direct',
-        //     type: 'line',
-        //     stack: 'Total',
-        //     areaStyle: {},
-        //     emphasis: {
-        //       focus: 'series'
-        //     },
-        //     data: [320, 332, 301, 334, 390, 330, 320]
-        //   },
-        //   {
-        //     name: 'Search Engine',
-        //     type: 'line',
-        //     stack: 'Total',
-        //     label: {
-        //       // show: true,
-        //       position: 'top'
-        //     },
-        //     areaStyle: {},
-        //     emphasis: {
-        //       focus: 'series'
-        //     },
-        //     data: [820, 932, 901, 934, 1290, 1330, 1320]
-        //   }
-        // ]
+
       };
+      console.log(option, `xxx`)
       unwarp(this.chart).setOption(option);
       // this.chart.setOption(option);
 
