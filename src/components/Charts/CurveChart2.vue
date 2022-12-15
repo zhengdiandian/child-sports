@@ -110,111 +110,70 @@ export default {
       const  isWeight = ['体重'].includes(chartData.projectName)
       let series = []
       let max = undefined
-      if(['身高'].includes(chartData.projectName)){
-        colors.shift()
-        scoreList.shift()
-        Object.keys(chartData.standard).forEach(keys => chartData.standard[keys].shift())
-      }
-      const isReverse = ['10米折返跑', '双脚连续跳', '走平衡木'].includes(chartData.projectName);
-      if (isReverse) {
-        colors.reverse();
-        scoreList.reverse()
-      }
+      // if(['身高'].includes(chartData.projectName)){
+      //   colors.shift()
+      //   scoreList.shift()
+      //   Object.keys(chartData.standard).forEach(keys => chartData.standard[keys].shift())
+      // }
+
       const childData = chartData.dataList.sort((a, b) => a.age - b.age).map(data => data.projectData)
+
       console.log('data', childData)
+      debugger
       const ageList = ['3岁-3岁半', '3岁半-4岁', '4岁-4岁半', "4岁半-5岁", '5岁-5岁半', '5岁半-6岁', '6岁-6岁半']
       const ageList2 = ['3岁', '3岁半', '4岁', "4岁半", '5岁', '5岁半', '6岁', '六岁半']
       const xList = [3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5]
+
       const source = chartData.dataList.map(item => [item.age , item.projectData])
+      const nameList = chartData.dataList.map(item => item.level)
       const dataList = [0,1, 2, 3, 4, 5].map( () => [])
-      if(!isWeight){
-        const standardKeys = Object.keys(chartData.standard).sort((a, b) => a - b)
-        let maxDataList = chartData.standard['6.0']
-        // if(isReverse) {
-        //   maxDataList = chartData.standard['3.0']
-        // }
-         max = Math.ceil( Math.max.apply(null, [Math.abs(maxDataList[maxDataList.length-1] * 2 - maxDataList[maxDataList.length-2]), ...childData]))
-        const min = Math.floor( Math.min.apply(null, [Math.abs(maxDataList[0] * 2 - maxDataList[1]), ...childData]))
-        // alert(min)
-        // alert(`max: ${max}`)
-        console.log('standard', standardKeys)
-        standardKeys.forEach((key,i) => {
-          // if(['身高'].includes(chartData.projectName))return
-          // if(isReverse) return  chartData.standard[key].push(Math.abs( min))
-          chartData.standard[key].push(Math.abs( max))
-        })
-        console.log( chartData.standard, 'xx')
-        standardKeys.forEach((key,i) => {
-          chartData.standard[key].forEach((num, index) => {
-            if(index === 0) {
-              dataList[index].push(num)
-            }
-            else {
-              dataList[index].push( Math.abs( num - chartData.standard[key][index-1]).toFixed(2))
-            }
-          })
-        })
         console.log(dataList, 'datalist')
         // dataList.push(dataList[dataList.length-1])
-         series = colors.map((key, index) => {
+        series = source.map((key, index) => {
           console.log(index, 'index')
           debugger
           return {
             // offset: 0,
-            xAxisIndex: 0,
-            // markLine: {
-            //
-            //   symbol: '',
-            //   silent: false,
-            //   lineStyle: {
-            //     color: '#F29838',
-            //     // type: 'solid'
-            //   },
-            //   label:{
-            //     padding: [-0, -80, -500, -45],
-            //     option: 'start',
-            //     formatter() {
-            //       return '今日'
-            //     }
-            //   },
-            //   data: [
-            //     {
-            //       xAxis: chartData.day
-            //     },
-            //   ]
-            // },
-            name: scoreList[index],
-            type: 'bar',
+            xAxisIndex: 1,
+            markLine: {
+
+              symbol: '',
+              silent: false,
+              lineStyle: {
+                color: '#F29838',
+                // type: 'solid'
+              },
+              label:{
+                padding: [-0, -80, -500, -45],
+                option: 'start',
+                formatter() {
+                  return '今日'
+                }
+              },
+              data: [
+                {
+                  xAxis: chartData.day
+                },
+              ]
+            },
+            name: nameList[index],
+            type: 'scatter',
             areaStyle: {},
             emphasis: {
               focus: 'series'
             },
-            barCategoryGap: "0%",
-            stack: "level",
             itemStyle: {
-              normal: {
-                color: colors[index],
-                // barBorderRadius:[12, 12, 0, 0],
-                label: {
-                  // offset: 1,
-                  show: index === 4? true: true,
-                  position: 'inside',
-                  textStyle: { fontSize: '18px', },
-                  formatter(param) {
-                    // console.log(param)
-                    const {seriesIndex,componentIndex, value, dataIndex} = param
-                    if(dataIndex ===6) return scoreList[seriesIndex]
-                    return  ''
-                  }
-                },
-              }
+              borderWidth: 2,
+              borderColor: 'green',
+              color: '#fff',
             },
+            barCategoryGap: "0%",
 
 
-            data: dataList[index]
+            data: key
           }
         })
-      }
+
 
 
       console.log(series, 1111, source, 'xxxx')
@@ -243,7 +202,7 @@ export default {
           // }
         ],
         tooltip: {
-          show:false,
+          show:true,
           trigger: 'axis',
           axisPointer: {
             // type: 'cross',
@@ -260,7 +219,7 @@ export default {
           // }
         },
         legend: {
-          show: false
+          show: true
           // data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
         },
         // toolbox: {
@@ -329,7 +288,7 @@ export default {
         yAxis: [
           {
             // min,
-            name: chartData.unit,
+            name: '分值',
             nameLocation: 'end',
             nameGap:40,
             nameTextStyle:{
@@ -338,9 +297,9 @@ export default {
               padding: [0,0,0,-30]
             },
             axisLine: {
-              show: false,
+              // show: false,
               lineStyle: { //刻度线样式
-                // color: '#00A8E5',
+                color: '#DDDDDD',
                 lineStyle:{
                   type: 'dashed'
                 }
@@ -348,13 +307,13 @@ export default {
             },
 
             axisTick: {
-              show: false,
+              // show: false,
               inside: false,  // 刻度线朝上 或朝下，默认为false为朝下
-              lineStyle: { //刻度线样式
-                color: '#00A8E5'
-              },
+              // lineStyle: { //刻度线样式
+              //   color: '#00A8E5'
+              // },
             },
-            max: isWeight? 120: max,
+            // max: isWeight? 120: max,
             // inverse: isReverse,
             type: 'value',
             // scale: true
@@ -378,44 +337,22 @@ export default {
 
         ],
         series: [...series,
-          {
-            xAxisIndex:1,
-            min:3,
-            name: '测量值',
-            // type: 'scatter',
-            type: 'line',
-            symbol: 'circle',
-            symbolSize: 10,
-            // datasetIndex: 0,
-            itemStyle: {
-              color: 'rgba(255, 148, 3, 1)',
-              borderColor: 'rgba(255, 148, 3, 1)',
-              borderWidth: 2
-            },
-            markLine: {
-
-              symbol: '',
-              silent: false,
-              lineStyle: {
-                color: '#F29838',
-                // type: 'solid'
-              },
-              label:{
-                padding: [-0, -80, -500, -45],
-                option: 'start',
-                formatter() {
-                  return '今日'
-                }
-              },
-              data: [
-                {
-                  xAxis: chartData.day
-                },
-              ]
-            },
-
-          },
-
+          // {
+          //   xAxisIndex:1,
+          //   min:3,
+          //   name: '测量值',
+          //   // type: 'scatter',
+          //   type: 'line',
+          //   symbol: 'circle',
+          //   symbolSize: 10,
+          //   // datasetIndex: 0,
+          //   itemStyle: {
+          //     color: 'rgba(255, 148, 3, 1)',
+          //     borderColor: 'rgba(255, 148, 3, 1)',
+          //     borderWidth: 2
+          //   },
+          //
+          // },
 
         ]
 

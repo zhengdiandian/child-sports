@@ -3,8 +3,9 @@ import {curve} from '@/api/toddlerDataManagement'
 import {useRoute} from "vue-router";
 import {ref} from "vue";
 import CurveChart from '@/components/Charts/CurveChart.vue'
+import CurveChart2 from '@/components/Charts/CurveChart2.vue'
 
-const activeName = ref('')
+const activeName = ref('综合得分')
 const chartData = ref({})
 const handleClick = (tab, event) => {
   // curveData.value.projectData[tab.index].day = (new Date() -  +new Date( curveData.value.birthday)) / 1000/ 60 / 60/ 24/365
@@ -21,6 +22,7 @@ const curveData = ref({
 })
 curve({infantId}).then((res) => {
   curveData.value = res.data
+  handleClick({index: 0})
 })
 </script>
 <template>
@@ -50,8 +52,13 @@ curve({infantId}).then((res) => {
         </el-tab-pane>
       </el-tabs>
       <CurveChart
+        v-if="chartData.projectName !=='综合得分'"
         :chart-data="chartData"
       ></CurveChart>
+      <CurveChart2
+        v-else
+        :chart-data="chartData"
+      ></CurveChart2>
     </div>
   </div>
 </template>
