@@ -4,6 +4,7 @@ import {useRoute} from "vue-router";
 import {ref} from "vue";
 import CurveChart from '@/components/Charts/CurveChart.vue'
 import CurveChart2 from '@/components/Charts/CurveChart2.vue'
+import dateFormat from "@/utils/dateFormat.js";
 
 const activeName = ref('综合得分')
 const chartData = ref({})
@@ -27,20 +28,26 @@ curve({infantId}).then((res) => {
 </script>
 <template>
   <div class="bg-white">
-    <div class="flex justify-start">
-      <div></div>
-      <div class="text-2xl">
-        xxx
+    <div class="flex justify-start py-2 px-4">
+      <div class="w-20">
+        <img src="@/img/logo.png" alt="">
       </div>
-      <div class="flex flex-col">
-        <div>性别：</div>
-        <div>生日：</div>
+      <div class="text-2xl flex items-center px-2">
+        {{curveData.name}}
+      </div>
+      <div class="flex flex-col pl-4">
+        <div>
+          <span class="iconfont  icon-geren text-[#FF9403]"></span>
+          性别：{{curveData.gender}}</div>
+        <div>
+          <span class="iconfont  icon-shengri text-[#FF9403]"></span>
+          生日：{{dateFormat(curveData.birthday, "yyyy-mm-dd")}}</div>
       </div>
     </div>
     <div>
       <el-tabs
+        class="px-4"
         v-model="activeName"
-        class="demo-tabs"
         @tab-click="handleClick"
       >
         <el-tab-pane
