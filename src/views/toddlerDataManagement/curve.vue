@@ -45,7 +45,6 @@ curve({infantId}).then((res) => {
           :label="item.projectName"
           :name="item.projectName"
         >
-          User
         </el-tab-pane>
       </el-tabs>
       <CurveChart

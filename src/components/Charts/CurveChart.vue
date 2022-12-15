@@ -104,9 +104,12 @@ export default {
     },
     setOptions() {
       const chartData = JSON.parse( JSON.stringify(this.chartData));
-      if (!chartData.standard) return
+      if (!chartData.dataList) return
       const colors = ['#CAD3EF','#E7F0D7', '#FDEECC', '#FCCFCF', '#D5ECF5', '#C4E3D5']
       const scoreList = ([0,1, 2, 3, 4, 5]).map((item, index) => item + '分');
+      const  isWeight = ['体重'].includes(chartData.projectName)
+      let series = []
+      let max = undefined
       if(['身高'].includes(chartData.projectName)){
         colors.shift()
         scoreList.shift()
@@ -124,72 +127,75 @@ export default {
       const xList = [3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5]
       const source = chartData.dataList.map(item => [item.age , item.projectData])
       const dataList = [0,1, 2, 3, 4, 5].map( () => [])
-      const standardKeys = Object.keys(chartData.standard).sort((a, b) => a - b)
-      let maxDataList = chartData.standard['6.0']
-      // if(isReverse) {
-      //   maxDataList = chartData.standard['3.0']
-      // }
-      const max = Math.ceil( Math.max.apply(null, [Math.abs(maxDataList[maxDataList.length-1] * 2 - maxDataList[maxDataList.length-2]), ...childData]))
-      const min = Math.floor( Math.min.apply(null, [Math.abs(maxDataList[0] * 2 - maxDataList[1]), ...childData]))
-      // alert(min)
-      // alert(`max: ${max}`)
-      console.log('standard', standardKeys)
-      standardKeys.forEach((key,i) => {
-        // if(['身高'].includes(chartData.projectName))return
-        // if(isReverse) return  chartData.standard[key].push(Math.abs( min))
-        chartData.standard[key].push(Math.abs( max))
-      })
-      console.log( chartData.standard, 'xx')
-      standardKeys.forEach((key,i) => {
-        chartData.standard[key].forEach((num, index) => {
-          if(index === 0) {
-            dataList[index].push(num)
-          }
-          else {
-            dataList[index].push( Math.abs( num - chartData.standard[key][index-1]).toFixed(2))
+      if(!isWeight){
+        const standardKeys = Object.keys(chartData.standard).sort((a, b) => a - b)
+        let maxDataList = chartData.standard['6.0']
+        // if(isReverse) {
+        //   maxDataList = chartData.standard['3.0']
+        // }
+         max = Math.ceil( Math.max.apply(null, [Math.abs(maxDataList[maxDataList.length-1] * 2 - maxDataList[maxDataList.length-2]), ...childData]))
+        const min = Math.floor( Math.min.apply(null, [Math.abs(maxDataList[0] * 2 - maxDataList[1]), ...childData]))
+        // alert(min)
+        // alert(`max: ${max}`)
+        console.log('standard', standardKeys)
+        standardKeys.forEach((key,i) => {
+          // if(['身高'].includes(chartData.projectName))return
+          // if(isReverse) return  chartData.standard[key].push(Math.abs( min))
+          chartData.standard[key].push(Math.abs( max))
+        })
+        console.log( chartData.standard, 'xx')
+        standardKeys.forEach((key,i) => {
+          chartData.standard[key].forEach((num, index) => {
+            if(index === 0) {
+              dataList[index].push(num)
+            }
+            else {
+              dataList[index].push( Math.abs( num - chartData.standard[key][index-1]).toFixed(2))
+            }
+          })
+        })
+        console.log(dataList, 'datalist')
+        // dataList.push(dataList[dataList.length-1])
+         series = colors.map((key, index) => {
+          console.log(index, 'index')
+          debugger
+          return {
+            // offset: 0,
+            xAxisIndex: 0,
+
+            name: scoreList[index],
+            type: 'bar',
+            areaStyle: {},
+            emphasis: {
+              focus: 'series'
+            },
+            barCategoryGap: "0%",
+            stack: "level",
+            itemStyle: {
+              normal: {
+                color: colors[index],
+                // barBorderRadius:[12, 12, 0, 0],
+                label: {
+                  // offset: 1,
+                  show: index === 4? true: true,
+                  position: 'inside',
+                  textStyle: { fontSize: '18px', },
+                  formatter(param) {
+                    // console.log(param)
+                    const {seriesIndex,componentIndex, value, dataIndex} = param
+                    if(dataIndex ===6) return scoreList[seriesIndex]
+                    return  ''
+                  }
+                },
+              }
+            },
+
+
+            data: dataList[index]
           }
         })
-      })
-      console.log(dataList, 'datalist')
-      // dataList.push(dataList[dataList.length-1])
-      const series = colors.map((key, index) => {
-        console.log(index, 'index')
-        debugger
-        return {
-          // offset: 0,
-          xAxisIndex: 0,
+      }
 
-          name: scoreList[index],
-          type: 'bar',
-          areaStyle: {},
-          emphasis: {
-            focus: 'series'
-          },
-          barCategoryGap: "0%",
-          stack: "level",
-          itemStyle: {
-            normal: {
-              color: colors[index],
-              // barBorderRadius:[12, 12, 0, 0],
-              label: {
-                // offset: 1,
-                show: index === 4? true: true,
-                position: 'inside',
-                textStyle: { fontSize: '18px', },
-                formatter(param) {
-                  // console.log(param)
-                  const {seriesIndex,componentIndex, value, dataIndex} = param
-                  if(dataIndex ===6) return scoreList[seriesIndex]
-                  return  ''
-                }
-              },
-            }
-          },
-
-
-          data: dataList[index]
-        }
-      })
 
       console.log(series, 1111, source, 'xxxx')
       const option = {
@@ -217,6 +223,7 @@ export default {
           // }
         ],
         tooltip: {
+          show:false,
           trigger: 'axis',
           axisPointer: {
             // type: 'cross',
@@ -241,12 +248,12 @@ export default {
         //     saveAsImage: {}
         //   }
         // },
-        // grid: {
-        //   left: '3%',
-        //   right: '4%',
-        //   bottom: '6%',
-        //   containLabel: true
-        // },
+        grid: {
+          left: '3%',
+          right: '6%',
+          bottom: '6%',
+          containLabel: true
+        },
         xAxis: [{
           show:false,
           type: 'category',
@@ -266,7 +273,22 @@ export default {
           offset: 30, // 向下偏移，为了不和第一条x轴重合
           //x轴 轴线
           axisLine: {
-            show: false
+            show: true,
+            lineStyle: { //刻度线样式
+              color: '#00A8E5',
+              lineStyle:{
+                type: 'dashed'
+              }
+            },
+          },
+          splitLine:{
+            show:false
+          },
+          axisTick: {
+            inside: false,  // 刻度线朝上 或朝下，默认为false为朝下
+            lineStyle: { //刻度线样式
+              color: '#00A8E5'
+            },
           },
           axisLabel: {
             inside: true,
@@ -287,13 +309,47 @@ export default {
         yAxis: [
           {
             // min,
-            max,
+            name: chartData.unit,
+            nameLocation: 'end',
+            nameGap:40,
+            nameTextStyle:{
+              color: '#000000',
+              verticalAlign: 'middle',
+              padding: [0,0,0,-30]
+            },
+            axisLine: {
+              show: false,
+              lineStyle: { //刻度线样式
+                // color: '#00A8E5',
+                lineStyle:{
+                  type: 'dashed'
+                }
+              },
+            },
+
+            axisTick: {
+              show: false,
+              inside: false,  // 刻度线朝上 或朝下，默认为false为朝下
+              lineStyle: { //刻度线样式
+                color: '#00A8E5'
+              },
+            },
+            max: isWeight? 120: max,
             // inverse: isReverse,
             type: 'value',
             // scale: true
 
-          },  {
-
+          },
+          {
+            axisLine: {
+              show: false,
+              lineStyle: { //刻度线样式
+                color: '#00A8E5',
+                lineStyle:{
+                  type: 'dashed'
+                }
+              },
+            },
             // inverse: isReverse,
             type: 'value',
             scale: false
