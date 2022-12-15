@@ -162,7 +162,27 @@ export default {
           return {
             // offset: 0,
             xAxisIndex: 0,
+            markLine: {
 
+              symbol: '',
+              silent: false,
+              lineStyle: {
+                color: '#F29838',
+                // type: 'solid'
+              },
+              label:{
+                padding: [-0, -80, -500, -45],
+                option: 'start',
+                formatter() {
+                  return '今日'
+                }
+              },
+              data: [
+                {
+                  xAxis: chartData.day
+                },
+              ]
+            },
             name: scoreList[index],
             type: 'bar',
             areaStyle: {},
@@ -372,6 +392,7 @@ export default {
               borderColor: 'rgba(255, 148, 3, 1)',
               borderWidth: 2
             },
+
           },
 
         ]

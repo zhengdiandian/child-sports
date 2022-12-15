@@ -7,8 +7,10 @@ import CurveChart from '@/components/Charts/CurveChart.vue'
 const activeName = ref('')
 const chartData = ref({})
 const handleClick = (tab, event) => {
+  // curveData.value.projectData[tab.index].day = (new Date() -  +new Date( curveData.value.birthday)) / 1000/ 60 / 60/ 24/365
   chartData.value = curveData.value.projectData[tab.index]
-  console.log(tab, event)
+  chartData.value.day = (new Date() -  +new Date( curveData.value.birthday)) / 1000/ 60 / 60/ 24/365
+  // console.log(tab, event, chartData.value)
 }
 const infantId = useRoute().query.infantId
 const curveData = ref({
