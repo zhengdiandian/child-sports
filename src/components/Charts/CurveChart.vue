@@ -123,7 +123,7 @@ export default {
       const childData = chartData.dataList.sort((a, b) => a.age - b.age).map(data => data.projectData)
       console.log('data', childData)
       const ageList = ['3岁-3岁半', '3岁半-4岁', '4岁-4岁半', "4岁半-5岁", '5岁-5岁半', '5岁半-6岁', '6岁-6岁半']
-      const ageList2 = ['3岁', '3岁半', '4岁', "4岁半", '5岁', '5岁半', '6岁', '六岁半']
+      const ageList2 = ['3岁', '3岁半', '4岁', "4岁半", '5岁', '5岁半', '6岁', '6岁半']
       const xList = [3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5]
       const source = chartData.dataList.map(item => [item.age , item.projectData])
       const dataList = [0,1, 2, 3, 4, 5].map( () => [])
@@ -338,6 +338,7 @@ export default {
               padding: [0,0,0,-30]
             },
             axisLine: {
+              // onZero: true,
               show: false,
               lineStyle: { //刻度线样式
                 // color: '#00A8E5',
@@ -353,8 +354,12 @@ export default {
               lineStyle: { //刻度线样式
                 color: '#00A8E5'
               },
-            },
-            max: isWeight? 120: max,
+            },          position: 'bottom',
+
+            // padding: [0,-180,0,-30],
+            min:['身高'].includes(chartData.projectName)?80: undefined,
+            // interval: 5,
+            max: isWeight? 70: max,
             // inverse: isReverse,
             type: 'value',
             // scale: true
