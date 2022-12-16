@@ -8,6 +8,8 @@ import("./theme/macarons.js");
 const unwarp = (obj) => obj && (obj.__v_raw || obj.valueOf() || obj);
 // import ecStat from 'echarts-stat';
 // echarts.registerTransform(ecStat.transform.regression);
+import dateFormat from "@/utils/dateFormat.js";
+
 export default {
   mixins: [resize],
   props: {
@@ -105,9 +107,17 @@ export default {
     setOptions() {
       const chartData = JSON.parse( JSON.stringify(this.chartData));
       if (!chartData.dataList) return
-      const colors = ['#CAD3EF','#E7F0D7', '#FDEECC', '#FCCFCF', '#D5ECF5', '#C4E3D5']
+      const colors = ['#7CDFB2','#7ED6F8','#FCDA8B', '#F99090',  '#D5ECF5', '#C4E3D5']
       const scoreList = ([0,1, 2, 3, 4, 5]).map((item, index) => item + '分');
       const  isWeight = ['体重'].includes(chartData.projectName)
+      const findColorIndex = (name) => {
+        debugger
+
+        if(name.includes('优秀')) return 0
+        if(name.includes('良好')) return 1
+        if(name.includes('不合格')) return 3
+        if(name.includes('合格')) return 2
+      }
       let series = []
       let max = undefined
       // if(['身高'].includes(chartData.projectName)){
@@ -115,23 +125,24 @@ export default {
       //   scoreList.shift()
       //   Object.keys(chartData.standard).forEach(keys => chartData.standard[keys].shift())
       // }
-
-      const childData = chartData.dataList.sort((a, b) => a.age - b.age).map(data => data.projectData)
+      const sortDataList = chartData.dataList.sort((a, b) => a.age - b.age)
+      const childData = sortDataList.map(data => data.projectData)
 
       console.log('data', childData)
       debugger
       const ageList = ['3岁-3岁半', '3岁半-4岁', '4岁-4岁半', "4岁半-5岁", '5岁-5岁半', '5岁半-6岁', '6岁-6岁半']
-      const ageList2 = ['3岁', '3岁半', '4岁', "4岁半", '5岁', '5岁半', '6岁', '六岁半']
+      const ageList2 = ['3岁', '3岁半', '4岁', "4岁半", '5岁', '5岁半', '6岁', '6岁半']
       const xList = [3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5]
 
-      const source = chartData.dataList.map(item => [item.age , item.projectData])
-      const nameList = chartData.dataList.map(item => item.level)
-      const dataList = [0,1, 2, 3, 4, 5].map( () => [])
-        console.log(dataList, 'datalist')
+      let source = sortDataList.map(item => [item.age , item.projectData])
+
+      const nameList = sortDataList.map(item => item.level)
+      // const dataList = [0,1, 2, 3, 4, 5].map( () => [])
+        // console.log(dataList, 'datalist')
         // dataList.push(dataList[dataList.length-1])
         series = source.map((key, index) => {
-          console.log(index, 'index')
-          debugger
+
+          console.log(colors[findColorIndex(nameList[index])], 'index', index, findColorIndex(nameList[index]))
           return {
             // offset: 0,
             xAxisIndex: 1,
@@ -158,19 +169,19 @@ export default {
             },
             name: nameList[index],
             type: 'scatter',
-            areaStyle: {},
-            emphasis: {
-              focus: 'series'
-            },
+            // areaStyle: {},
+            // emphasis: {
+            //   focus: 'series'
+            // },
             itemStyle: {
-              borderWidth: 2,
+              borderWidth: nameList[index].includes('部分') ? 2: 0,
               borderColor: 'green',
-              color: '#fff',
+              color:nameList[index].includes('部分') ? '#fff': colors[findColorIndex(nameList[index])],
             },
             barCategoryGap: "0%",
 
 
-            data: key
+            data: [source[index]]
           }
         })
 
@@ -202,13 +213,25 @@ export default {
           // }
         ],
         tooltip: {
+          trigger: "item",
           show:true,
-          trigger: 'axis',
+          // trigger: 'axis',
           axisPointer: {
             // type: 'cross',
             label: {
               backgroundColor: '#6a7985'
             }
+          },
+          formatter(param) {
+            const { dataIndex, seriesIndex, marker, seriesName, seriesType } = param;
+            console.log(param)
+            return  `${marker} <span class="text-2xl " style="color: #000000 ; font-size: 18px ">综合得分${sortDataList[seriesIndex].projectData}/</span><span class="text-2xl " style="color: #333333 ; font-size: 16px ">满分${sortDataList[seriesIndex].fullScore}</span>
+            <div style="color: #333333 ; font-size: 16px ; padding-left: 20px;">
+
+            ${   dateFormat(sortDataList[seriesIndex].testTime, "yyyy-mm-dd")}
+            </div>`
+
+
           }
         },
         axisLabel: {
@@ -315,7 +338,7 @@ export default {
             },
             // max: isWeight? 120: max,
             // inverse: isReverse,
-            type: 'value',
+            // type: 'value',
             // scale: true
 
           },
@@ -330,8 +353,8 @@ export default {
               },
             },
             // inverse: isReverse,
-            type: 'value',
-            scale: false
+            // type: 'value',
+            // scale: false
 
           },
 
