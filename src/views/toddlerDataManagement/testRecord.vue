@@ -186,6 +186,7 @@
 
 
   <el-dialog
+    v-if="dialogFormVisible2"
     v-model="dialogFormVisible2"
     title="报告预览"
   >
