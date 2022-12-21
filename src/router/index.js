@@ -77,7 +77,7 @@ const routes = [
     meta: {
       title: "幼儿数据管理",
       icon: "icon-shuju",
-      id: 1
+      id: 50
       // fullScreen: true
     },
     path: "/dataOverview",
@@ -86,7 +86,7 @@ const routes = [
     children: [
       {
         meta: {
-          id: 2,
+          id: 51,
           title: "学员管理"
           // hidden: true, // 是否显示，
           // add: false, //增加
@@ -99,7 +99,7 @@ const routes = [
       },
       {
         meta: {
-          id: 2,
+          id: 52,
           title: "测试记录"
         },
         path: "testRecord",
@@ -108,8 +108,9 @@ const routes = [
       },
       {
         meta: {
-          id: 2,
-          title: "添加测试记录"
+          id: 52,
+          title: "添加测试记录",
+          showLeftMenu: false
         },
         path: "addTestRecord",
         name: "addTestRecord",
