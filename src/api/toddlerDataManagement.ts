@@ -64,7 +64,7 @@ export function getInfant(parameter: object, loading = true) {
 
 export function infantTestRecordDownloadTemplate(parameter: object, loding = true) {
   return request({
-    url: api.downloadTemplate,
+    url: api.infantTestRecordDownloadTemplate,
     method: "GET",
     params: parameter,
     responseType: "blob",
