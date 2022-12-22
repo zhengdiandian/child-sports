@@ -30,7 +30,7 @@ const reportData = ref({
   scoreList: []
 });
 const colors = ['#000000', '#E66022', '#EBA939', '#43B772', '#5470C6', '#3FA5EA'];
-const weightColors = [colors[1], colors[2], colors[5], colors[2], colors[1], colors[1]]
+const weightColors = [colors[1], colors[3], colors[5], colors[3], colors[1], colors[1]]
 const colors2 = [...colors].reverse()
 const findColor = (name, index) => {
   // debugger
@@ -45,8 +45,7 @@ const findColor = (name, index) => {
     return weightColors[index]
   }
   if (['10米折返跑', '走平衡木', '双脚连续跳'].includes(name)) {
-    debugger
-    return colors2[index]
+    return colors[index]
   }
   if(['身高'].includes(name))  {return colors[index+1]}
   return colors[index]
@@ -392,14 +391,14 @@ onMounted(() => {
     </template>
   </div>
   <div class=" pt-3 pr-1 bg-white">
-    <div class="flex justify-around flex-wrap">
+    <div class="flex justify-around flex-wrap box px-2 ml-[-3rem]" >
       <div
         v-for="(item,index ) in reportData.spiritData"
         :key="index"
         :style="{width: item.projectName.length>2 }"
-        class="flex flex-normal w-1/2"
+        class="flex  flex-normal w-1/2 justify-items-end"
       >
-        <span class="flex-auto text-right">{{ item.projectName }}：</span>
+        <span class=" flex-auto text-right">{{ item.projectName }}：</span>
         <el-rate
           v-model="item.score"
           disabled
@@ -442,5 +441,9 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 
+.box:deep(.el-rate ){
+  --el-rate-icon-size: 12px;
+  //font-size: 12px;
 
+}
 </style>
