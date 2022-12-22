@@ -318,14 +318,13 @@
 
 <script lang="ts" setup>
 
-import {nextTick, reactive, ref, watch} from "vue";
+import {nextTick, onActivated, reactive, ref, watch} from "vue";
 
 import type {ElForm} from "element-plus";
 import {ElMessage, ElMessageBox} from "element-plus";
 import dateFormat from "@/utils/dateFormat.js";
 import rulesList from "@/utils/rules";
 import {pageSize, pageSizes} from "@/hooks/pagination";
-import {IdCard} from "@/utils/index";
 import {
   add,
   infantTestRecordDelete,
@@ -338,7 +337,14 @@ import {
 import ImportAndExportFile from "@/components/ImportAndExportFile/index.vue";
 import Preview from "@/components/Preview.vue";
 import QrcodeVue from 'qrcode.vue'
+import {useRoute} from "vue-router";
+onActivated(() => {
+  const route = useRoute();
+  if(route.query.now) {
+    getList()
+  }
 
+})
 const genderList = ["男", "女"];
 
 type FormInstance = InstanceType<typeof ElForm>
@@ -375,13 +381,13 @@ const copyLink = (): void => {
   }, 1)
 }
 
-watch(() => creatForm.studentIdentity, (value) => {
-  if (!value) return;
-  if (value.length === 18) {
-    creatForm.studentGender = IdCard(value, 2);
-  }
-
-});
+// watch(() => creatForm.studentIdentity, (value) => {
+//   if (!value) return;
+//   if (value.length === 18) {
+//     creatForm.studentGender = IdCard(value, 2);
+//   }
+//
+// });
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
@@ -442,7 +448,7 @@ const creatStudent = () => {
         message: "添加成功.",
         type: "success"
       });
-      getlist();
+      getList();
       dialogFormVisible.value = false;
     } else {
       ElMessage({
@@ -465,7 +471,7 @@ function updateStudentList() {
           message: "更新成功.",
           type: "success"
         });
-        getlist();
+        getList();
       } else {
         ElMessage({
           message: "更新失败.",
@@ -498,7 +504,7 @@ function deleteStudentById(recordId: number) {
               message: "删除成功.",
               type: "success"
             });
-            getlist();
+            getList();
           } else {
             ElMessage({
               message: "删除失败.",
@@ -524,7 +530,7 @@ function importStudentData(formData: any) {
   infantTestRecordImport(formData).then((res: any) => {
     const {message, code} = res;
     if (code == 200) {
-      getlist();
+      getList();
       ElMessage.success(message);
     } else {
       ElMessage.error(message);
@@ -547,7 +553,7 @@ const tableData = reactive({
   totalPage: 1,
   list: []
 });
-const getlist = () => {
+const getList = () => {
   const parmeter = filterStudentData;
   infantTestRecordList(parmeter).then((res) => {
     const {data} = res;
@@ -557,16 +563,16 @@ const getlist = () => {
     console.log("学校列表", data, tableData);
   });
 };
-getlist()
+getList()
 
 function handleSizeChange(size: number) {
   filterStudentData.pageSize = size;
-  getlist();
+  getList();
 }
 
 function handleCurrentChange(currentPage: number) {
   filterStudentData.pageNum = currentPage;
-  getlist();
+  getList();
   console.log("页吗改变", filterStudentData);
 }
 
