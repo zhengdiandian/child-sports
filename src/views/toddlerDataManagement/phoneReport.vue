@@ -13,8 +13,15 @@ import d from '@/img/不及格.png'
 const imgUrlObject = {
   '优秀': a,
   '良好': b,
-  '及格': c,
-  '不及格': d
+  '合格': c,
+  '不合格': d
+}
+const  findImg = (level) => {
+  if(level.includes('优秀')) return a
+  if(level.includes('良好')) return b
+  if(level.includes('合格')) return c
+  if(level.includes('不合格')) return d
+
 }
 const route = useRoute();
 
@@ -23,57 +30,85 @@ const reportData = ref({
   scoreList: []
 });
 const colors = ['#000000', '#E66022', '#EBA939', '#43B772', '#5470C6', '#3FA5EA'];
-const weightColors = [colors[0], colors[2], colors[4], colors[2], colors[0], colors[0]]
+const weightColors = [colors[1], colors[2], colors[5], colors[2], colors[1], colors[1]]
 const colors2 = [...colors].reverse()
 const findColor = (name, index) => {
-  debugger
-  console.log(name, index)
+  // debugger
+  if(index<0){
+    index=0
+  }
+  if(name === '双脚连续跳 ') {
+    console.log(name, index, 333333333)
+
+  }
   if (['体重'].includes(name)) {
     return weightColors[index]
   }
-  if (['10米折返跑', '走平衡木', '10米折返跑'].includes(name)) {
+  if (['10米折返跑', '走平衡木', '双脚连续跳'].includes(name)) {
+    debugger
     return colors2[index]
   }
+  if(['身高'].includes(name))  {return colors[index+1]}
   return colors[index]
+
+
+}
+const findValueColor = (val ,arr, name) =>  {
+
 }
 const chartRef = ref('');
 (async () => {
   const res = await report({recordId})
-  res.data.projectData.forEach(item => {
+  res.data.projectData.forEach((item,i) => {
     if (item.standard[0] === 0) {
       item.standard.shift()
     }
-
+    const standard = [...item.standard]
     const before = (item.standard[0] * 2 - item.standard[1]);
     const after = item.standard[item.standard.length - 1] * 2 - item.standard[item.standard.length - 2];
     item.standard.unshift(before)
-    // item.standard.push(after)
+    item.standard.push(after)
+    console.log(item.standard, 'item.standard')
     item.after = after
     item.before = before
     item.total = after - before
     item.widthList = []
-    item.userWidth = ((item.value - before) / item.total * 100).toFixed(2) + '%'
     item.standard.forEach((standardItem, index) => {
-
-      if (index === 0) {
-        debugger
-        item.widthList.push((item.standard[index + 1] - item.before))
-        console.log(index, (item.standard[index + 1] - item.before), item.standard[index + 1], item.after, 'ssss')
-
-        // alert((item.standard[index +1] -  item.after ))
-      } else if (index === item.standard.length - 1) {
-        item.widthList.push(item.after - (standardItem))
-      } else {
-        item.widthList.push((item.standard[index + 1] - standardItem))
+      if(index ===item.standard.length -1 ){}
+      else {
+        if(i === 4) {
+          console.log(((item.standard[index + 1] - item.standard[index ])/ item.total) ,'aaaa',item.projectName)
+        }
+        item.widthList.push(((item.standard[index + 1] - item.standard[index ])/ item.total )*100)
 
       }
+      // if (index === 0) {
+      //   debugger
+      //   item.widthList.push((item.standard[index + 1] - item.before))
+      //   console.log(index, (item.standard[index + 1] - item.before), item.standard[index + 1], item.after, 'ssss')
+      //
+      //   // alert((item.standard[index +1] -  item.after ))
+      // } else if (index === item.standard.length - 1) {
+      //   item.widthList.push( (standardItem))
+      // } else {
+      //   item.widthList.push(( standardItem))
+      //
+      // }
 
 
     })
-    item.arr = item.widthList
-    item.widthList = item.widthList.map((num => (num / item.total * 100).toFixed(2) + '%'))
-    item.userIndex = item.standard.findIndex(num => num > item.value)
-    item.userIndex = item.userIndex === -1 ? item.standard.length - 1 : item.userIndex
+    item.arr = [...item.widthList]
+    item.widthList = item.arr.map((num => (num  + '%')))
+    if(['10米折返跑', '走平衡木', '双脚连续跳'].includes(item.projectName)){
+      item.userIndex = item.standard.findIndex(num => num < item.value)
+
+    }else {
+      item.userIndex = item.standard.findIndex(num => num > item.value)
+
+    }
+    // item.userIndex = item.userIndex === -1 ? standard.length - 1 : item.userIndex
+    item.userWidth =     (item.value -(item.standard[0] ))/ item.total*100
+      .toFixed(2)
 
   })
   reportData.value = res.data
@@ -262,7 +297,7 @@ onMounted(() => {
         身体成分
       </div>
       <div>
-        测试日年龄：5岁8个月
+        测试日年龄：{{reportData.infantAge}}
       </div>
     </div>
     <div class="flex justify-around pt-6 pb-2">
@@ -329,11 +364,11 @@ onMounted(() => {
         <div class="w-full  flex justify-start flex-nowrap  pr-2 ">
           <div class="w-full overflow-hidden">
             <div
-              :style="{backgroundColor:findColor( project.projectName, project.userIndex + (project.widthList.length === 5? 1: 0)), width: project.userWidth }"
+              :style="{backgroundColor:findColor( project.projectName, project.userIndex-1 ), width: (project.userWidth>100? 100: project.userWidth)+ '%' }"
               class="h-4 inline-block relative "
             >
               <span
-                class="absolute right-[0%] bottom-[50%] text-sm translate-y-2/4 translate-x-8"
+                class="text-white absolute right-[50%] bottom-[50%] text-sm translate-y-2/4 translate-x-[50%]"
               >{{ project.value }}</span>
             </div>
           </div>
@@ -342,12 +377,12 @@ onMounted(() => {
           <div
             v-for="(item, index) in project.widthList"
             :key="index"
-            :style="{backgroundColor:findColor( project.projectName, index+ (project.widthList.length === 5? 1: 0)), width: item}"
+            :style="{backgroundColor:findColor( project.projectName, index), width: item}"
             class="h-2 inline-block relative "
           >
             <span
-              v-if=" index !== project.widthList.length -1"
-              class="absolute right-0 bottom-[-250%] text-sm translate-x-2/4"
+              v-if=" index !== 0 "
+              class="absolute left-0 bottom-[-250%] text-sm translate-x-[-50%]"
             >{{
               project.projectName === '立定跳远' ? Number.parseInt(project.standard[index]) : project.standard[index].toFixed(1)
             }}</span>
@@ -383,7 +418,7 @@ onMounted(() => {
       </div>
       <div class="">
         <div class="w-28 ">
-          <img :src="imgUrlObject[reportData?.scoreLevel]">
+          <img :src="findImg(reportData?.scoreLevel)">
         </div>
         <div class="text-center  text-2xl">
           {{ reportData?.scoreLevel }}
