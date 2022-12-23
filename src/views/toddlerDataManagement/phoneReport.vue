@@ -428,7 +428,7 @@ onMounted(() => {
           <span class="text-3xl text-[#FF8F22]">{{ reportData?.score }}</span>/{{ reportData.fullScore ?? 100 }}
         </div>
       </div>
-      <div class="">
+      <div class="flex justify-center flex-col items-center">
         <div class="w-28 ">
           <img :src="findImg(reportData?.scoreLevel)">
         </div>
