@@ -37,10 +37,7 @@ const findColor = (name, index) => {
   if(index<0){
     index=0
   }
-  if(name === '双脚连续跳 ') {
-    console.log(name, index, 333333333)
 
-  }
   if (['体重'].includes(name)) {
     return weightColors[index]
   }
@@ -52,7 +49,23 @@ const findColor = (name, index) => {
 
 
 }
-const findValueColor = (val ,arr, name) =>  {
+const findValueColor = (name ,arr, val ) =>  {
+  const index = arr.findIndex(num => num> val)
+  if(name === '身高') {
+    console.log(name, index, 333333333)
+
+  }
+  if (['体重'].includes(name)) {
+    if(index === -1) return  weightColors[0]
+    return weightColors[index]
+  }
+  if (['10米折返跑', '走平衡木', '双脚连续跳'].includes(name)) {
+    return colors[index-1]
+  }
+  if(['身高'].includes(name))  {return colors[index]}
+  // return  'red'
+  return colors[index-1]
+  console.log('index', index)
 
 }
 const chartRef = ref('');
@@ -363,7 +376,7 @@ onMounted(() => {
         <div class="w-full  flex justify-start flex-nowrap  pr-2 ">
           <div class="w-full overflow-hidden">
             <div
-              :style="{backgroundColor:findColor( project.projectName, project.userIndex-1 ), width: (project.userWidth>100? 100: project.userWidth)+ '%' }"
+              :style="{backgroundColor:findValueColor( project.projectName, project.standard ,project.value), width: (project.userWidth>100? 100: project.userWidth)+ '%' }"
               class="h-4 inline-block relative "
             >
               <span
