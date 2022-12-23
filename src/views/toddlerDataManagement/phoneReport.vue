@@ -308,7 +308,7 @@ onMounted(() => {
   <div class="pl-2 pt-2 pr-1 border-b-2 border-b-gray bg-white">
     <div class="flex justify-between">
       <div class="text-2xl text-[#3F240] ">
-        身体成分
+        身体形态
       </div>
       <div>
         测试日年龄：{{reportData.infantAge}}
@@ -344,7 +344,7 @@ onMounted(() => {
 
   <div class="pl-2 pt-3 pb-6 pr-1 border-b-2 border-b-gray bg-white">
     <div class="text-2xl text-[#3F240] ">
-      运动能力
+      身体素质
     </div>
     <div class="w-full h-[20rem]">
       <div
