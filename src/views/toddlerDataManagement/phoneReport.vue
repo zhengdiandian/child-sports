@@ -51,21 +51,23 @@ const findColor = (name, index) => {
 }
 const findValueColor = (name ,arr, val ) =>  {
   const index = arr.findIndex(num => num> val)
-  if(name === '身高') {
+  if(name === '体重') {
     console.log(name, index, 333333333)
 
   }
   if (['体重'].includes(name)) {
     if(index === -1) return  weightColors[0]
-    return weightColors[index]
+    return weightColors[index-1]
   }
   if (['10米折返跑', '走平衡木', '双脚连续跳'].includes(name)) {
+    if(index === -1) return  colors[5]
     return colors[index-1]
   }
-  if(['身高'].includes(name))  {return colors[index]}
-  // return  'red'
+  if(['身高'].includes(name))  {
+    if(index === -1) return  colors[5]
+
+    return colors[index]}
   return colors[index-1]
-  console.log('index', index)
 
 }
 const chartRef = ref('');
@@ -380,7 +382,8 @@ onMounted(() => {
               class="h-4 inline-block relative "
             >
               <span
-                class="text-white absolute right-[50%] bottom-[50%] text-sm translate-y-2/4 translate-x-[50%]"
+                :class="project.userWidth<0? 'text-black pl-4': 'text-white'"
+                class=" absolute right-[50%] bottom-[50%] text-sm translate-y-2/4 translate-x-[50%]"
               >{{ project.value }}</span>
             </div>
           </div>
