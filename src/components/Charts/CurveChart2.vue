@@ -117,11 +117,14 @@ export default {
       const  isWeight = ['体重'].includes(chartData.projectName)
       const findColorIndex = (name) => {
         debugger
+        let index = 0
+        if(name.includes('优秀')) index=  0
+        if(name.includes('良好')) index = 1
+        if(name.includes('不合格')) index =  3
+        if(name.includes('合格')) index = 2
+        console.log('name', name, index)
 
-        if(name.includes('优秀')) return 0
-        if(name.includes('良好')) return 1
-        if(name.includes('不合格')) return 3
-        if(name.includes('合格')) return 2
+        return colors[ index]
       }
       let series = []
       let max = undefined
@@ -134,7 +137,6 @@ export default {
       const childData = sortDataList.map(data => data.projectData)
 
       console.log('data', childData)
-      debugger
       const ageList = ['3岁-3岁半', '3岁半-4岁', '4岁-4岁半', "4岁半-5岁", '5岁-5岁半', '5岁半-6岁', '6岁-6岁半']
       const ageList2 = ['3岁', '3岁半', '4岁', "4岁半", '5岁', '5岁半', '6岁', '6岁半']
       const xList = [3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5]
@@ -180,8 +182,8 @@ export default {
             // },
             itemStyle: {
               borderWidth: nameList[index].includes('部分') ? 2: 0,
-              borderColor: 'green',
-              color:nameList[index].includes('部分') ? '#fff': colors[findColorIndex(nameList[index])],
+              borderColor: findColorIndex(nameList[index]),
+              color:nameList[index].includes('部分') ? '#fff': findColorIndex(nameList[index]),
             },
             barCategoryGap: "0%",
 
