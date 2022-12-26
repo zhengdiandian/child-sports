@@ -406,7 +406,8 @@ export default {
                 // type: 'solid'
               },
               label:{
-                padding: [-0, -80, -500, -45],
+                padding: [0, -80, -80, -45],
+
                 option: 'start',
                 formatter() {
                   return '今日'

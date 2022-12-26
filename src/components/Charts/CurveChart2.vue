@@ -1,17 +1,17 @@
 <script lang="js">
 import resize from "./mixins/resize.js";
 import * as echarts from "echarts";
+// import ecStat from 'echarts-stat';
+// echarts.registerTransform(ecStat.transform.regression);
+import dateFormat from "@/utils/dateFormat.js";
 // import "@/utils/echarts.js";
 
 // console.warn(window.echarts, "echarts");
 import("./theme/macarons.js");
 const unwarp = (obj) => obj && (obj.__v_raw || obj.valueOf() || obj);
-// import ecStat from 'echarts-stat';
-// echarts.registerTransform(ecStat.transform.regression);
-import dateFormat from "@/utils/dateFormat.js";
-const colors = ['#7CDFB2','#7ED6F8','#FCDA8B', '#F99090',  '#D5ECF5', '#C4E3D5']
+const colors = ['#7CDFB2', '#7ED6F8', '#FCDA8B', '#F99090', '#D5ECF5', '#C4E3D5']
 
-const textList = ['优秀(测试全部)','良好(测试全部)', '合格(测试全部)', '不合格(测试全部)']
+const textList = ['优秀(测试全部)', '良好(测试全部)', '合格(测试全部)', '不合格(测试全部)']
 const textList2 = ['优秀(测试部分)', '良好(测试部分)', '合格(测试部分)', '不合格(测试部分)']
 export default {
   mixins: [resize],
@@ -161,8 +161,8 @@ export default {
                 color: '#F29838',
                 // type: 'solid'
               },
-              label:{
-                padding: [-0, -80, -500, -45],
+              label: {
+                padding: [0, -80, -30, -45],
                 option: 'start',
                 formatter() {
                   return '今日'
@@ -398,13 +398,27 @@ export default {
 <template>
   <div>
     <div class="grid grid-cols-4 ">
-      <div class="text-[10px] text-[#333333] flex items-center justify-center" :key="text" v-for="(text, i) in textList">
-          <span class="w-2 h-2 inline-block rounded-full bg-violet-700" :style="{backgroundColor: colors[i]}"></span>
-        {{text}}
+      <div
+        v-for="(text, i) in textList"
+        :key="text"
+        class="text-[10px] text-[#333333] flex items-center justify-center"
+      >
+        <span
+          :style="{backgroundColor: colors[i]}"
+          class="w-2 h-2 inline-block rounded-full bg-violet-700"
+        ></span>
+        {{ text }}
       </div>
-      <div class="text-[10px] text-[#333333] flex items-center justify-center mt-4" :key="text" v-for="(text, i) in textList2">
-        <span class="w-[0.55rem] h-[0.55rem] inline-block rounded-full border-2  " :style="{borderColor: colors[i]}"></span>
-        {{text}}
+      <div
+        v-for="(text, i) in textList2"
+        :key="text"
+        class="text-[10px] text-[#333333] flex items-center justify-center mt-4"
+      >
+        <span
+          :style="{borderColor: colors[i]}"
+          class="w-[0.55rem] h-[0.55rem] inline-block rounded-full border-2  "
+        ></span>
+        {{ text }}
       </div>
     </div>
     <div
