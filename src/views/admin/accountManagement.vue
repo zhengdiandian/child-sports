@@ -299,7 +299,7 @@ const editClickHandle = (row: any) => {
   goEdit();
 };
 const goEdit = () => {
-  router.push({ name: "accountManagementUpdate" });
+  router.push({name: "accountManagementUpdate", query: {now: +new Date()}});
 };
 const openCreateDialog = async (state: boolean, row: BizUpdateSchoolexamParam) => {
   const keys = Object.keys(creatForm);
@@ -418,6 +418,7 @@ function deletePe(row: any) {
     // peListDelete({ dailytestId })
     adminDelete(row)
       .then((res: any) => {
+        console.log('resxxxxxx', res)
         if (res.code === 200) {
           ElMessage({
             message: "删除成功.",
@@ -433,10 +434,18 @@ function deletePe(row: any) {
 
       })
       .catch((err) => {
-        ElMessage({
-          message: "删除失败.",
-          type: "error"
-        });
+        if (err.code === 200) {
+          ElMessage({
+            message: "删除成功.",
+            type: "success"
+          });
+          getList();
+        } else {
+          ElMessage({
+            message: "删除失败.",
+            type: "error"
+          });
+        }
         console.log("删除错误信息", err);
       });
   });

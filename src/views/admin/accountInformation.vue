@@ -13,9 +13,7 @@
         <el-button
           class="text-gray-700 text-lg"
           type="text"
-          @click="$router.replace({name: 'accountManagement',query: {
-            now: +new Date(),
-          }})"
+          @click="goBack"
         >
           <span class="iconfont icon-fanhui text-2xl"></span>
           <span class="underline align-text-bottom ">返回</span>
@@ -277,8 +275,8 @@
   <Password :username="editData?.username"></Password>
 </template>
 <script lang="ts" setup>
-import {computed, nextTick, provide, reactive, ref} from "vue";
-import {onBeforeRouteLeave, useRoute} from "vue-router";
+import {computed, nextTick, onActivated, provide, reactive, ref} from "vue";
+import {onBeforeRouteLeave, useRoute, useRouter} from "vue-router";
 import type {ElForm} from "element-plus";
 import {ElMessage} from "element-plus";
 import {SchoolType} from "@/utils/baseData";
@@ -300,11 +298,20 @@ provide("dialogFormVisible", dialogFormVisible);
 type FormInstance = InstanceType<typeof ElForm>
 const schoolSelect = ref();
 const route = useRoute();
+const router = useRouter()
 const store = useStore();
 const formSize = ref("large");
 const options = ref([]);
 const ruleFormRef = ref<FormInstance>();
 const isLoading = ref<boolean>(false);
+const goBack = () => {
+  router.replace({
+    name: 'accountManagement', query: {
+      now: +new Date(),
+    }
+  })
+
+}
 const city = ref({
   area: {
     district: ""
@@ -313,42 +320,51 @@ const city = ref({
 });
 const isTeacher = computed(() => creatForm.roleId === 4);
 console.error(11111, getDistrictCode("天桥区"));
-
+const defaultState = {
+  "birthday": "",
+  "city": "370100",
+  "district": "370104",
+  "identity": "",
+  "nationality": "汉族",
+  "nickName": "",
+  "password": "",
+  "phone": undefined,
+  "province": "370000",
+  "roleId": 5,
+  "schoolId": undefined,
+  "schoolName": undefined,
+  "schoolType": "",
+  "teacherCode": undefined,
+  "teacherName": undefined,
+  "username": "",
+  id: undefined
+}
 let creatForm: any = reactive(
-  {
-    "birthday": "",
-    "city": "370100",
-    "district": "370104",
-    "identity": "",
-    "nationality": "汉族",
-    "nickName": "",
-    "password": "",
-    "phone": undefined,
-    "province": "370000",
-    "roleId": 5,
-    "schoolId": undefined,
-    "schoolName": undefined,
-    "schoolType": "",
-    "teacherCode": undefined,
-    "teacherName": undefined,
-    "username": "",
-    id: undefined
-  }
+  {...defaultState}
 );
 const isEdit = ref(false);
-const editData = store.state.Admin.editData;
-if (editData?.id) {
-  isEdit.value = true;
-  Object.keys(creatForm).forEach((key: string) => {
-    creatForm[key] = editData?.[key] ?? undefined;
-  });
-  nextTick(() => {
-    schoolSelect.value.filterCity.district = getDistrictCode(editData.district);
+onActivated(() => {
+  const editData = store.state.Admin.editData;
 
-  });
-}
+  if (editData?.id) {
+    isEdit.value = true;
+    Object.keys(creatForm).forEach((key: string) => {
+      creatForm[key] = editData?.[key] ?? undefined;
+    });
+    nextTick(() => {
+      schoolSelect.value.filterCity.district = getDistrictCode(editData.district);
+
+    });
+  } else {
+    Object.keys(creatForm).forEach((key: string) => {
+      creatForm[key] = defaultState[key];
+    });
+    // creatForm = {...defaultState}
+  }
+})
+
 const roleList = ref([]);
-listAll().then(({ data }: any) => {
+listAll().then(({data}: any) => {
   console.log('111', data)
   roleList.value = data.filter((item: any) => ([1, 5].includes(item.id)));
 });
@@ -414,6 +430,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
               resetForm(formEl);
             }
             isLoading.value = false;
+            goBack()
           })
           .catch((error: any) => {
             isLoading.value = false;
@@ -447,6 +464,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
             resetForm(formEl);
           }
           isLoading.value = false;
+          goBack()
         })
         .catch((error: any) => {
           isLoading.value = false;
