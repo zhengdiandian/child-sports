@@ -116,7 +116,7 @@
             </el-link>
             <el-link
               type="primary"
-              @click="$router.push({name: 'curve',query:{infantId: scope.row.infantId}})"
+              @click="openReview( scope.row.infantId)"
             >
               变化曲线
             </el-link>
@@ -249,6 +249,50 @@
       </span>
     </template>
   </el-dialog>
+  <el-dialog
+    v-if="dialogFormVisible2"
+    v-model="dialogFormVisible2"
+    title="报告预览"
+  >
+    <div
+      v-if="showQrcode"
+      class="flex justify-center"
+    >
+      <qrcode-vue
+        :size="300"
+        :value="url"
+        level="H"
+      />
+    </div>
+
+    <Preview
+      v-else
+      :url="url"
+    ></Preview>
+    <!--    <QRCodeVue3-->
+    <!--      :value="url"-->
+    <!--    />-->
+
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible2 = showQrcode = false">取消</el-button>
+        <el-button
+          type="primary"
+          @click="copyLink"
+        >复制分享链接</el-button>
+        <el-button
+          type="primary"
+          @click="showQrcode= true"
+        >二维码分享</el-button>
+      </span>
+    </template>
+  </el-dialog>
+  <input
+    id="copy-input"
+    v-model="url"
+    class="absolute left-[-1000px] top-[-1000px]"
+    type="text"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -271,16 +315,36 @@ import {
   update
 } from '@/api/toddlerDataManagement'
 import ImportAndExportFile from "@/components/ImportAndExportFile/index.vue";
-
+import Preview from "@/components/Preview.vue";
+import QrcodeVue from 'qrcode.vue'
 const genderList = ["男", "女"];
 
 type FormInstance = InstanceType<typeof ElForm>
 
 const formRef = ref<FormInstance>();
 const dialogFormVisible = ref(false);
+const dialogFormVisible2 = ref(false);
 const isCreate = ref(true);
 const schoolType = ref("");
+const showQrcode = ref(false)
+const url = ref("")
 
+const openReview = (id: number) => {
+  showQrcode.value = false
+  dialogFormVisible2.value = true
+  url.value = window.location.origin + `/#/curve?infantId=${id}`
+}
+const copyLink = (): void => {
+  setTimeout(() => {
+    const copyDom = document.getElementById('copy-input') as HTMLInputElement;
+    copyDom.select()
+    document.execCommand("Copy"); //复制
+    ElMessage({
+      type: 'success',
+      message: '复制成功!'
+    })
+  }, 1)
+}
 let creatForm: any = reactive(
   {
     "infantBirthday": "",

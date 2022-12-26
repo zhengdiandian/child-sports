@@ -298,7 +298,7 @@
 <script lang="ts" setup>
 import {Search} from "@element-plus/icons-vue";
 
-import {computed, onMounted, reactive, ref, unref} from "vue";
+import {computed, onActivated, onMounted, reactive, ref, unref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import type {ElForm} from "element-plus";
 import {ElMessage} from "element-plus";
@@ -390,14 +390,17 @@ const defaultData = {
   "uprightScore": 0
 }
 let ruleForm = ref(
-  defaultData
+  JSON.parse(JSON.stringify(defaultData))
 );
 
 const recordId = route.query.recordId
+const init = async() => {
+  // ruleForm.value = store.state.RandomTest.randomtest;
+  const route = useRoute();
 
-onMounted(async () => {
+  const recordId = route.query.recordId
+
   if (recordId) {
-    ruleForm.value = store.state.RandomTest.randomtest;
     isSelected.value = true
     route.meta.title = '修改测试记录'
     const {data} = await getRecordInfo({recordId})
@@ -408,6 +411,14 @@ onMounted(async () => {
     currentStudent.value.infantParentPhone = infantParentPhone
     ruleForm.value = data
     ruleForm.value.recordId = recordId as any
+  }else {
+    resetForm(ruleFormRef.value)
+    isSelected.value = false
+  }
+}
+onMounted( () => {
+
+   init()
     // try {
     //   console.log(`city', ${city.value.area}`, store.state.RandomTest.randomtest, store.state.RandomTest.randomtest.randomtestDistrictCode);
     //   city.value.area.district = store.state.RandomTest.randomtest.randomtestDistrictCode + "";
@@ -415,8 +426,10 @@ onMounted(async () => {
     //   console.error(e);
     // }
 
-  }
 });
+onActivated(
+  init
+)
 
 const isSelected = ref(false);
 
@@ -438,9 +451,10 @@ const submitForm = (formEl: FormInstance | undefined) => {
           });
           isLoading.value = false;
           resetForm(formEl);
-          if (!route.query.recordId) {
-            return isSelected.value = false
-          }
+          // if (!route.query.recordId) {
+          //   return isSelected.value = false
+          //   goBack();
+          // }
           goBack();
         }
         isLoading.value = false;
@@ -466,7 +480,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   city.value.area.district = "";
   formEl.resetFields();
-  ruleForm = ref(JSON.parse(JSON.stringify(defaultData)));
+  ruleForm.value = (JSON.parse(JSON.stringify(defaultData)));
 };
 </script>
 
