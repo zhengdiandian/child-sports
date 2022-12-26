@@ -30,24 +30,31 @@ curve({infantId}).then((res) => {
   <div class="bg-white">
     <div class="flex justify-start py-2 px-4">
       <div class="w-20">
-        <img src="@/img/logo.png" alt="">
+        <img
+          alt=""
+          class="w-25"
+          src="@/img/logo.png"
+        >
       </div>
-      <div class="text-2xl flex items-center px-2">
-        {{curveData.name}}
-      </div>
+
       <div class="flex flex-col pl-4">
+        <div class=" flex items-center px-2 pl-4">
+          {{ curveData.name }}
+        </div>
         <div>
           <span class="iconfont  icon-geren text-[#FF9403]"></span>
-          性别：{{curveData.gender}}</div>
+          性别：{{ curveData.gender }}
+        </div>
         <div>
           <span class="iconfont  icon-shengri text-[#FF9403]"></span>
-          生日：{{dateFormat(curveData.birthday, "yyyy-mm-dd")}}</div>
+          生日：{{ dateFormat(curveData.birthday, "yyyy-mm-dd") }}
+        </div>
       </div>
     </div>
     <div>
       <el-tabs
-        class="px-4"
         v-model="activeName"
+        class="px-4"
         @tab-click="handleClick"
       >
         <el-tab-pane
